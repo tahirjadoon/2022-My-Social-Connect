@@ -17,5 +17,5 @@ Package                      Version
 
 Projects
 ------------------------------------------------------
-Read "0001 Read Me - Basic Info - Setup.docx" for setting up and executing the projects in this repository.
+Read "Documents\0001 Project - Basic Info - Setup.docx" for setting up and executing the projects in this repository.
 
