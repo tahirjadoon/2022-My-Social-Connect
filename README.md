@@ -3,7 +3,8 @@ Social networking app
 
 Projects
 ------------------------------------------------------
-Read "Documents\0001 Project - Basic Info - Setup.docx" for setting up and executing the projects in this repository.
+•	Read "Documents\0001 Project - Basic Info - Setup.docx" for setting up and executing the projects in this repository.
+•	There are links to other docs towards the bottom of the doc. Follow the docs, these are in the order in which this project has been built. 
 
 What we will be using?
 ------------------------------------------------------
