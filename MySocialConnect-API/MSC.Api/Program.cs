@@ -17,10 +17,9 @@ https://stackoverflow.com/questions/69722872/asp-net-core-6-how-to-access-config
 https://stackoverflow.com/questions/70865207/net-6-stable-iconfiguration-setup-in-program-cs
 */
 ConfigurationManager configuration = builder.Configuration; // allows both to access and to set up the config 
-builder.Services.AddDbContext<DataContext>(options => {
-    options.UseSqlite(configuration.GetConnectionString("DefaultConnection"));
-});
 builder.Services.RegisterRepos();
+builder.Services.RegisterDBContext(configuration);
+var myAllowSpecificOrigins = builder.Services.RegisterCors(configuration);
 //CUSTOM:End
 
 builder.Services.AddControllers();
@@ -38,6 +37,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+//CUSTOM: Start
+app.UseCors(myAllowSpecificOrigins);
+//CUSTOM: End
 
 app.UseAuthorization();
 

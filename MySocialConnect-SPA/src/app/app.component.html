@@ -1,0 +1,29 @@
+<h1>{{ title }}</h1>
+
+<p>WebApiURL: {{webApiUrl}}</p>
+<hr>
+<h2>Users Method 1</h2>
+<div *ngIf="error1 !== ''">
+    Error:{{error1}}
+</div>
+<div *ngIf="error1 === ''">
+    <ul>
+        <li *ngFor='let user of users1'>
+            {{user.id}} - {{user.userName}}
+        </li>
+    </ul>
+    Complete: {{complete1}}
+</div>
+<hr>
+<h2>Users Method 2</h2>
+<div *ngIf="error2 !== ''">
+    Error:{{error2}}
+</div>
+<div *ngIf="error2 === ''">
+    <ul>
+        <li *ngFor='let user2 of users2'>
+            {{user2.id}} - {{user2.userName}}
+        </li>
+    </ul>
+    Complete: {{complete2}}
+</div>
