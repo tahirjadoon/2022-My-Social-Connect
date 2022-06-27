@@ -8,9 +8,10 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'My Social Connect The Dating App';
+  title = 'My Social Connects';
   webApiUrl: string = "";
-
+  /*
+  //users commented code
   //for subscripton first method
   users1: any;
   error1: string = "";
@@ -22,17 +23,24 @@ export class AppComponent implements OnInit {
   complete2: string = "";
 
   constructor(private http: HttpClient){}
+  */
 
   ngOnInit() {
+    
     this.webApiUrl = environment.usebaseUrlHttps ? environment.webApiBaseUrlHttps : environment.webApiBaseUrlHttp;
 
+    /*
+    //users commencted code
     //preferred way of doing the subscription
     this.getUsers();
 
     //second and old way of doing subscripton
     this.getUsers2();
+    */
   }
 
+  /*
+  //users commented code
   getUsers(){
     this.http.get(`${this.webApiUrl}api/users`).subscribe({
       next: r => {
@@ -56,4 +64,5 @@ export class AppComponent implements OnInit {
       this.complete2 = "Request 2 Completed"
     });
   }
+  */
 }
