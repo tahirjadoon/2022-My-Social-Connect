@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MSC.Api.Core.BusinessLogic;
+using MSC.Api.Core.Dto;
 using MSC.Api.Core.Entities;
 
 namespace MSC.Api.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class UsersController : ControllerBase
+public class UsersController : BaseApiController
 {
     private readonly IUsersBusinessLogic _usersBl;
 
@@ -19,7 +19,8 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
+    [AllowAnonymous]
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
     {
         var users = await _usersBl.GetUsers();
         if(users == null || !users.Any())
@@ -31,7 +32,8 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<AppUser>> GetUser(int id)
+    [Authorize]
+    public async Task<ActionResult<UserDto>> GetUser(int id)
     {
         var user = await _usersBl.GetUser(id);
         if(user == null)
