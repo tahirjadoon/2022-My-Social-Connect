@@ -9,6 +9,7 @@ import { LocalStorageService } from './local-storage.service';
 
 import { LoginDto } from '../models/loginDto.model';
 import { UserTokenDto } from '../models/userTokenDto.model';
+import { SiteRegisterDto } from '../models/siteRegisterDto.model';
 
 @Injectable({
   providedIn: 'root'
@@ -65,4 +66,24 @@ export class AccountService {
     this.currentUserSource.next(null!);
   }
 
+  register(registerDto: SiteRegisterDto) {
+    var url = this.apiUrlService.accountRegisterUser;
+
+    if(environment.displayConsoleLog)
+      console.log(`AccountService RegisterUrl: ${url}`);
+    
+    return this.httpClientService
+      .post<UserTokenDto>(url, registerDto)
+      .pipe(
+        map((respone: UserTokenDto) => {
+          const user = respone;
+          if (user) {
+            //store the user in local storage
+            this.localStorageService.setItem(this.localStorageService._keyUser, user);
+            this.currentUserSource.next(user);
+          }
+          return user;
+        })
+      );
+  }
 }
