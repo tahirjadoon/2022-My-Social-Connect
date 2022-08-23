@@ -1,6 +1,9 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { environment } from 'src/environments/environment';
+
+import { environment } from '../environments/environment';
+
+import { AccountService } from './core/services/account.service';
+
 
 @Component({
   selector: 'app-root',
@@ -8,7 +11,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'My Social Connects';
+  title = '';
   webApiUrl: string = "";
   /*
   //users commented code
@@ -24,10 +27,13 @@ export class AppComponent implements OnInit {
 
   constructor(private http: HttpClient){}
   */
+  constructor(private accountService: AccountService){}
 
   ngOnInit() {
-    
+    this.title = environment.title;
     this.webApiUrl = environment.usebaseUrlHttps ? environment.webApiBaseUrlHttps : environment.webApiBaseUrlHttp;
+    //get the user from local storage if available and set it. This is persistence
+    this.setCurrentUser();
 
     /*
     //users commencted code
@@ -65,4 +71,9 @@ export class AppComponent implements OnInit {
     });
   }
   */
+  
+  //on website load get the user and fire it. The subscribers then will pick it, nav bar component in this case
+  setCurrentUser() {
+    this.accountService.getAndFireCurrentUser();
+  }
 }

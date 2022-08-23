@@ -1,6 +1,5 @@
-<h1>{{ title }}</h1>
+<!--<h1 class="title">{{ title }}</h1>-->
 
-<p>WebApiURL: {{webApiUrl}}</p>
 <!--
 users commented code
 <hr>
@@ -30,3 +29,12 @@ users commented code
     Complete: {{complete2}}
 </div>
 -->
+
+<app-nav [title]="title"></app-nav>
+<div class="container main-container" >
+    <ul>
+        <li>Tahir</li>
+    </ul>
+</div>
+
+<footer><small><span class="title">{{ title }}</span> WebApiURL: <span class="api-url">{{webApiUrl}}</span></small></footer>

@@ -1,0 +1,50 @@
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    
+    <div class="container">
+        <!--<div class="container-fluid">-->
+            <a class="navbar-brand" href="#"><span class="title">{{title}}</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse" #navbarCollapse>
+
+                <!--only show links when logged in-->
+                <ul class="navbar-nav me-auto mb-2 mb-md-0" *ngIf="isLoggedIn">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" routerLink="/" (click)="onNavBarItemClickCloseNavBar()">Matches</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/" (click)="onNavBarItemClickCloseNavBar()">Lists</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/" (click)="onNavBarItemClickCloseNavBar()">Messages</a>
+                    </li>
+                </ul>
+
+                <!--only show in logged in mode, 
+                    apply directives dropdown, dropdownToggle 
+                            and structural directive *dropdownMenu-->
+                <div *ngIf="isLoggedIn" class="btn-group" dropdown>
+                    <button type="button" class="btn btn-info">Welcome {{userInfo.userName}}</button>
+                    <button id="button-split" type="button" dropdownToggle class="btn btn-info dropdown-toggle dropdown-toggle-split" aria-controls="dropdown-split">
+                      <span class="caret"></span>
+                      <span class="sr-only visually-hidden">Welcome {{userInfo.userName}}</span>
+                    </button>
+                    <ul id="dropdown-split" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="Welcome">
+                      <li role="menuitem"><a class="dropdown-item" routerLink="/" (click)="onNavBarItemClickCloseNavBar()">Edit Profile</a></li>
+                      <li class="divider dropdown-divider"></li>
+                      <li role="menuitem"><a class="dropdown-item bg-danger text-white" (click)="onLogout()">Logout</a></li>
+                    </ul>
+                  </div>
+
+                <!--show in not logged in mode-->
+                <form *ngIf="!isLoggedIn" #loginForm="ngForm" (ngSubmit)="onLogin()" autocomplete="off" class="d-flex">
+                    <input name="username" id="username" #username="ngModel" [(ngModel)]="loginInfo.userName" required class="form-control me-2" type="text" placeholder="username" aria-label="Username">
+                    <input name="password" id="password" #password="ngModel" [(ngModel)]="loginInfo.password" required class="form-control me-2" type="password" placeholder="password" aria-label="Password">
+                    <button class="btn btn-outline-success" type="submit" [disabled]="username.invalid || password.invalid">Login</button>
+                </form>
+            </div>
+        <!--</div>-->
+    </div>
+    
+  </nav>
