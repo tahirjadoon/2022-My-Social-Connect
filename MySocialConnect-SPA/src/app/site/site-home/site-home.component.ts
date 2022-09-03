@@ -1,9 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 import { ErrorMessageService } from '../../core/services/error-message.service';
 import { AccountService } from '../../core/services/account.service';
 import { environment } from '../../../environments/environment';
+
 
 @Component({
   selector: 'app-site-home',
@@ -12,15 +14,20 @@ import { environment } from '../../../environments/environment';
 })
 export class SiteHomeComponent implements OnInit, OnDestroy {
   //getting passed in from app.component.html
-  @Input() title = '';
+  //after route-outlet this is not happening any moree
+  //@Input() title = '';
+  //fill the title in this component now
+  title = '';
+
   registerMode: boolean = false;
 
   isLoggedIn: boolean = false;
   currentUserSubscription!: Subscription;
   
-  constructor(private accountService: AccountService, private errorMsgService: ErrorMessageService) { }
+  constructor(private accountService: AccountService, private errorMsgService: ErrorMessageService, private toastrService: ToastrService) { }
 
   ngOnInit(): void {
+    this.title = environment.title;
     this.getCurrentUser();
   }
 
@@ -53,7 +60,8 @@ export class SiteHomeComponent implements OnInit, OnDestroy {
   displayError(error: any, from: string) {
     const errorMsg = this.errorMsgService.getHttpErrorMessage(error);
     if(environment.displayConsoleLog) console.log(`displayError-${from} Error: ${errorMsg}`);
-    alert(`displayError-${from} Error: ${errorMsg}`);
+    //alert(`displayError-${from} Error: ${errorMsg}`);
+    this.toastrService.error(errorMsg);
   }
 
 }

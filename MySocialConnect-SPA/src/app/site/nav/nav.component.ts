@@ -1,5 +1,7 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 import { AccountService } from '../../core/services/account.service';
 import { ErrorMessageService } from '../../core/services/error-message.service';
@@ -36,7 +38,8 @@ export class NavComponent implements OnInit, OnDestroy {
   currentUserSubscription!: Subscription;
 
   constructor(private accountService: AccountService, private errorMsgService: ErrorMessageService,
-    private el: ElementRef, private renderer: Renderer2) { }
+    private el: ElementRef, private renderer: Renderer2,
+    private router: Router, private toastrService: ToastrService ) { }
 
   ngOnInit(): void {
     //subscribe to the observable being fired from the account service
@@ -61,6 +64,8 @@ export class NavComponent implements OnInit, OnDestroy {
         this.loginInfo = <LoginDto>{};
         //hide navbar in mobile mode
         this.onNavBarItemClickCloseNavBar();
+        //redirect to the /members/list
+        this.router.navigateByUrl('/members/list');
       }, error: e => {
         this.displayError(e, "onLogin");
       }, complete: () => {
@@ -90,6 +95,8 @@ export class NavComponent implements OnInit, OnDestroy {
     
     //flag 
     this.isLoggedIn = false;
+    //redirect the home page
+    this.router.navigateByUrl('/');
   }
 
   //hide the navbar in mobile mode after an action has been performed 
@@ -139,7 +146,8 @@ export class NavComponent implements OnInit, OnDestroy {
   displayError(error: any, from: string) {
     this.error = this.errorMsgService.getHttpErrorMessage(error);
     if(environment.displayConsoleLog) console.log(`displayError-${from} Error: ${this.error}`);
-    alert(`displayError-${from} Error: ${this.error}`);
+    //alert(`displayError-${from} Error: ${this.error}`);
+    this.toastrService.error(this.error);
   }
 
 }

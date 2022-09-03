@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 import { SiteRegisterDto } from '../../core/models/siteRegisterDto.model';
 import { environment } from '../../../environments/environment';
@@ -22,7 +23,7 @@ export class SiteRegisterComponent implements OnInit, OnDestroy {
   //note use of ! or will see a compiler error
   registerSubscription!: Subscription;
 
-  constructor(private accountService: AccountService, private errorMsgService: ErrorMessageService) { }
+  constructor(private accountService: AccountService, private errorMsgService: ErrorMessageService, private toastrService: ToastrService) { }
 
   ngOnInit(): void {
   }
@@ -52,7 +53,8 @@ export class SiteRegisterComponent implements OnInit, OnDestroy {
   displayError(error: any, from: string) {
     const errormsg = this.errorMsgService.getHttpErrorMessage(error);
     if(environment.displayConsoleLog) console.log(`displayError-${from} Error: ${errormsg}`);
-    alert(`displayError-${from} Error: ${errormsg}`);
+    //alert(`displayError-${from} Error: ${errormsg}`);
+    this.toastrService.error(errormsg);
   }
 
   onCancel() {
