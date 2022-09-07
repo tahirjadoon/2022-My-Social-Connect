@@ -11,4 +11,11 @@
         <button class="btn btn-success mr-2" type="submit" [disabled]="username.invalid || password.invalid">Register</button>&nbsp;
         <button class="btn btn-danger" (click)="onCancel()" type="button">Cancel</button>
     </div>
+
+    <div class="row mt-5" *ngIf="validationErrors && validationErrors.length > 0">
+        <ul class="text-danger">
+            <li *ngFor="let error of validationErrors">{{ error }}</li>
+        </ul>
+    </div>
+
 </form>

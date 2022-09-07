@@ -6,8 +6,12 @@ import { MemberListComponent } from './site/members/member-list/member-list.comp
 import { MemberDetailComponent } from './site/members/member-detail/member-detail.component';
 import { ListsComponent } from './site/lists/lists.component';
 import { MessagesComponent } from './site/messages/messages.component';
+import { TestErrorsComponent } from './site/errors/test-errors/test-errors.component';
+import { NotFoundComponent } from './site/errors/not-found/not-found.component';
 
 import { AuthGuard } from './core/guards/auth.guard';
+import { ServerErrorComponent } from './site/errors/server-error/server-error.component';
+
 
 //add the components here
 //first empty one is the default route
@@ -26,7 +30,10 @@ const routes: Routes = [
       { path: 'messages', component: MessagesComponent },
     ]
   },
-  { path: '**', component:  SiteHomeComponent, pathMatch: 'full'} //path match full is important here
+  { path: 'test-errors', component: TestErrorsComponent },
+  { path: 'not-found', component: NotFoundComponent },
+  { path: 'server-error', component: ServerErrorComponent },
+  { path: '**', component:  NotFoundComponent, pathMatch: 'full'} //path match full is important here
 ];
 
 @NgModule({

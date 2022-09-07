@@ -67,7 +67,8 @@ export class NavComponent implements OnInit, OnDestroy {
         //redirect to the /members/list
         this.router.navigateByUrl('/members/list');
       }, error: e => {
-        this.displayError(e, "onLogin");
+        //after the error interceptor the error is being displayed by toastr by the intercepter
+        //this.displayError(e, "onLogin");
       }, complete: () => {
         //do something on complete
         this.isExecutingLogin = false;

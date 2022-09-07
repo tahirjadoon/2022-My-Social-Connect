@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MSC.Api.Core.Extensions;
+using MSC.Api.Core.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,11 +30,18 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+//CUSTOM: Middleware Start
+app.UseMiddleware<ExceptionMiddleware>();
+//CUSTOM: Middleware End
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    //display -- this is the default
+    //app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();

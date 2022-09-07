@@ -23,6 +23,9 @@ export class SiteRegisterComponent implements OnInit, OnDestroy {
   //note use of ! or will see a compiler error
   registerSubscription!: Subscription;
 
+  //after implementation on error interceptor
+  validationErrors: string[] = [];
+
   constructor(private accountService: AccountService, private errorMsgService: ErrorMessageService, private toastrService: ToastrService) { }
 
   ngOnInit(): void {
@@ -33,17 +36,26 @@ export class SiteRegisterComponent implements OnInit, OnDestroy {
   }
 
   onRegister() {
+    this.validationErrors = [];//reset
     if (environment.displayConsoleLog) console.log(this.siteRegister);
     this.registerSubscription = this.accountService.register(this.siteRegister).subscribe({
       next: r => {
         if (environment.displayConsoleLog) {
           console.log("RegisterUserBack: ");
           console.log(r);
-          //cancel the form
-          this.onCancel();
         }
+        //cancel the form
+        this.onCancel();
       }, error: e => {
-        this.displayError(e, "Registeration");
+        //due to error intercepter we are getting a flat array of validation items so for modal validation need to check that
+        //check array and length > 0
+        //other cases the error interceptor is displaying the error
+        if (e?.length) {
+          if (environment.displayConsoleLog) console.log("***inside model validation errors***");
+          this.validationErrors = e;
+        }
+        if (environment.displayConsoleLog) console.log(e);
+        //this.displayError(e, "Registeration");
       }, complete: () => {
 
       }
@@ -58,6 +70,7 @@ export class SiteRegisterComponent implements OnInit, OnDestroy {
   }
 
   onCancel() {
+    this.validationErrors = [];//reset
     if (environment.displayConsoleLog) console.log('cancelled');
     this.cancelRegister.emit(false);
     //reset form

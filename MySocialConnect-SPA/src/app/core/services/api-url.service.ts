@@ -12,9 +12,6 @@ export class ApiUrlService {
   //add api key word to the base url and also add ending / to it
   private apiBaseUrl: string = `${this.baseUrl}api/`;
 
-  //add controllers to the base url
-  private accountBaseUrl = `${this.apiBaseUrl}account/`;
-
   constructor() {
 
     if (environment.displayConsoleLog) {
@@ -25,6 +22,14 @@ export class ApiUrlService {
   }
 
   //accounts controller urls
+  private accountBaseUrl = `${this.apiBaseUrl}account/`;
   accountRegisterUser: string = `${this.accountBaseUrl}register`;
   accountLogin: string = `${this.accountBaseUrl}login`;
+
+  //buggy controller urls
+  private buggyBaseUrl = `${this.apiBaseUrl}buggy/`;
+  buggyAuth: string = `${this.buggyBaseUrl}auth`;
+  buggyNotFound: string = `${this.buggyBaseUrl}not-found`;
+  buggyServerError: string = `${this.buggyBaseUrl}server-error`;
+  buggyBadRequest: string = `${this.buggyBaseUrl}bad-request`;
 }
