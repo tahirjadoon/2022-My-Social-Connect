@@ -9,6 +9,7 @@ using MSC.Api.Core.Entities;
 
 namespace MSC.Api.Controllers;
 
+[Authorize]
 public class UsersController : BaseApiController
 {
     private readonly IUsersBusinessLogic _usersBl;
@@ -19,10 +20,9 @@ public class UsersController : BaseApiController
     }
 
     [HttpGet]
-    [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
     {
-        var users = await _usersBl.GetUsers();
+        var users = await _usersBl.GetUsersAsync();
         if(users == null || !users.Any())
         {
             return NotFound("No users found!");
@@ -31,14 +31,25 @@ public class UsersController : BaseApiController
         return Ok(users);
     }
 
-    [HttpGet("{id}")]
-    [Authorize]
+    [HttpGet("{id}/id")]
     public async Task<ActionResult<UserDto>> GetUser(int id)
     {
-        var user = await _usersBl.GetUser(id);
+        var user = await _usersBl.GetUserAsync(id);
         if(user == null)
         {
             return NotFound($"No user found by id {id}");
+        }
+
+        return Ok(user);
+    }
+
+    [HttpGet("{name}/name")]
+    public async Task<ActionResult<UserDto>> GetUser(string name)
+    {
+        var user = await _usersBl.GetUserAsync(name);
+        if(user == null)
+        {
+            return NotFound($"No user found by name {name}");
         }
 
         return Ok(user);

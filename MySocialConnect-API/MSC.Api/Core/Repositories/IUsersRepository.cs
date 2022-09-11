@@ -1,17 +1,17 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MSC.Api.Core.Dto;
 using MSC.Api.Core.Entities;
 
 namespace MSC.Api.Core.Repositories;
 public interface IUsersRepository
 {
-    Task<IEnumerable<AppUser>> GetUsers();
-
-    Task<AppUser> GetUser(int id);
-
-    Task<AppUser> GetUser(string userName);
-
-    Task<AppUser> Register(AppUser user);
-
-    Task<bool> UserExists(string userName);
+    void Update(AppUser user);
+    Task<bool> SaveAllAsync();
+    Task<IEnumerable<UserDto>> GetUsersAsync();
+    Task<UserDto> GetUserAsync(int id);
+    Task<UserDto> GetUserAsync(string userName);
+    Task<AppUser> GetAppUserAsync(string userName);
+    Task<bool> RegisterAsync(AppUser user);
+    Task<bool> UserExistsAsync(string userName);
 }

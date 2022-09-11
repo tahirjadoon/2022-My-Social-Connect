@@ -1,4 +1,5 @@
 
+using AutoMapper;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +8,7 @@ using MSC.Api.Core.BusinessLogic;
 using MSC.Api.Core.DB;
 using MSC.Api.Core.Repositories;
 using MSC.Api.Core.Services;
+using MSC.Api.Core.Dto.AutoMapper;
 
 namespace MSC.Api.Core.Extensions;
 public static class ServiceExtensions
@@ -23,6 +25,9 @@ public static class ServiceExtensions
         //AddScoped: is for the life time of the request. Use this for the http requests
         //AddTransient: a new instance is provided to every request
         //AddSingleton: objects are the same for every object and every request
+
+        //AutoMapper Profile
+        services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
         //repositories
         services.AddScoped<IUsersRepository, UsersRepository>();

@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -23,33 +22,46 @@ public class UsersBusinessLogic : IUsersBusinessLogic
         _usersRepo = usersRepo;
     }
 
-    public async Task<IEnumerable<UserDto>> GetUsers()
+    public async Task<IEnumerable<UserDto>> GetUsersAsync()
     {
-        var users = await _usersRepo.GetUsers();
-        if(users == null || !users.Any())
-            return null;
+        var users = await _usersRepo.GetUsersAsync();
+        if (users == null || !users.Any()) return null;
 
-        var userDto = users.Select(x => new UserDto { Id = x.Id, UserName = x.UserName }).ToList();
-        return userDto;
+        //var userDto = users.Select(x => new UserDto { Id = x.Id, UserName = x.UserName }).ToList();
+        //var userDto = _mapper.Map<IEnumerable<UserDto>>(users);
+        //return userDto;
+        return users;
     }
 
-    public async Task<UserDto> GetUser(int id)
+    public async Task<UserDto> GetUserAsync(int id)
     {
-        var user = await _usersRepo.GetUser(id);
-        if(user == null)
-            return null;
+        var user = await _usersRepo.GetUserAsync(id);
+        if (user == null) return null;
 
-        var userDto = new UserDto { Id = user.Id, UserName = user.UserName };
-        return userDto;
+        //var userDto = new UserDto { Id = user.Id, UserName = user.UserName };
+        //var userDto = _mapper.Map<UserDto>(user);
+        //return userDto;
+        return user;
     }
 
-    public async Task<UserTokenDto> Register(UserRegisterDto registerUser)
+    public async Task<UserDto> GetUserAsync(string name)
+    {
+        var user = await _usersRepo.GetUserAsync(name);
+        if (user == null) return null;
+
+        //var userDto = new UserDto { Id = user.Id, UserName = user.UserName };
+        //var userDto = _mapper.Map<UserDto>(user);
+        //return userDto;
+        return user;
+    }
+
+    public async Task<UserTokenDto> RegisterAsync(UserRegisterDto registerUser)
     {
         if (registerUser == null)
             throw new ValidationException("Invalid user");
 
         var user = await RegisterUser(registerUser);
-        if(user == null || user.Id <= 0)
+        if (user == null || user.Id <= 0)
             throw new ValidationException("Unable to create registration");
 
         var userToken = new UserTokenDto
@@ -60,12 +72,12 @@ public class UsersBusinessLogic : IUsersBusinessLogic
         return userToken;
     }
 
-    public async Task<UserTokenDto> Login(LoginDto login)
+    public async Task<UserTokenDto> LoginAsync(LoginDto login)
     {
         if (login == null)
             throw new ValidationException("Login info missing");
 
-        var user = await _usersRepo.GetUser(login.UserName);
+        var user = await _usersRepo.GetAppUserAsync(login.UserName);
         if (user == null || user.PasswordSalt == null || user.PasswordHash == null)
             throw new UnauthorizedAccessException("Either username or password is wrong");
 
@@ -92,11 +104,11 @@ public class UsersBusinessLogic : IUsersBusinessLogic
             throw new ValidationException("User info missing");
 
         //check user not already taken
-        var isUser = await _usersRepo.UserExists(registerUser.UserName);
+        var isUser = await _usersRepo.UserExistsAsync(registerUser.UserName);
         if (isUser)
             throw new ValidationException("Username already taken");
 
-        //has the password. it will give back has and the salt
+        //hash the password. it will give back hash and the salt
         var hashKey = registerUser.Password.ComputeHashHmacSha512();
         if (hashKey == null)
             throw new ValidationException("Unable to handle provided password");
@@ -104,8 +116,14 @@ public class UsersBusinessLogic : IUsersBusinessLogic
         //convert to AppUser to register
         var user = new AppUser { UserName = registerUser.UserName, PasswordHash = hashKey.Hash, PasswordSalt = hashKey.Salt };
 
-        user = await _usersRepo.Register(user);
+        var isRegister = await _usersRepo.RegisterAsync(user);
+        if(!isRegister)
+            throw new ValidationException("User not registerd");
 
-        return user;
+        var returnUser = await _usersRepo.GetAppUserAsync(user.UserName);
+        if(returnUser == null)
+            throw new ValidationException("Something went wrong. No user found!");
+
+        return returnUser;
     }
 }

@@ -1,7 +1,11 @@
+using System;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using MSC.Api.Core.DB;
 using MSC.Api.Core.Extensions;
 using MSC.Api.Core.Middleware;
 
@@ -29,6 +33,26 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+//CUSTOM: Seed Data Start
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+try
+{
+    //get the required service
+    var context = services.GetRequiredService<DataContext>();
+    //asynchronously applies an pending migrations for the context to the database. Will create the database if it doesn't exist already
+    //just restarting the application will apply our migrations
+    await context.Database.MigrateAsync();
+    //now seed the users
+    await Seed.SeedUsers(context);
+}
+catch(Exception ex)
+{
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "An error occured during migration");
+}
+//CUSTOM: Seed Data End
 
 //CUSTOM: Middleware Start
 app.UseMiddleware<ExceptionMiddleware>();

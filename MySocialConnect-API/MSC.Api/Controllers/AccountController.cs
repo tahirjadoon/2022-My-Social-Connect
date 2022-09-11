@@ -50,7 +50,7 @@ public class AccountController : BaseApiController
     {
         try
         {
-            var user = await _userBl.Register(registerUser);
+            var user = await _userBl.RegisterAsync(registerUser);
 
             if (user == null || string.IsNullOrWhiteSpace(user.UserName) || string.IsNullOrWhiteSpace(user.Token))
                 return BadRequest("Unable to create registration");
@@ -77,7 +77,7 @@ public class AccountController : BaseApiController
     {
          try
         {
-            var user = await _userBl.Login(login);
+            var user = await _userBl.LoginAsync(login);
 
             if (user == null || string.IsNullOrWhiteSpace(user.UserName) || string.IsNullOrWhiteSpace(user.Token))
                 return Unauthorized("Unable to login user");
