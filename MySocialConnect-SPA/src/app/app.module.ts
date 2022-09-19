@@ -8,11 +8,13 @@ import { AppComponent } from './app.component';
 import { NavComponent } from './site/nav/nav.component';
 import { TestErrorsComponent } from './site/errors/test-errors/test-errors.component';
 import { NotFoundComponent } from './site/errors/not-found/not-found.component';
+import { ServerErrorComponent } from './site/errors/server-error/server-error.component';
 
 import { SharedModule } from './core/modules/shared.module';
 
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
-import { ServerErrorComponent } from './site/errors/server-error/server-error.component';
+import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
+
 
 //common items moved to shared module
 @NgModule({
@@ -21,15 +23,16 @@ import { ServerErrorComponent } from './site/errors/server-error/server-error.co
     NavComponent,
     TestErrorsComponent,
     NotFoundComponent,
-    ServerErrorComponent,
+    ServerErrorComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    //AppRoutingModule, //moved to the shared module
     SharedModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })

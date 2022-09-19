@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -36,6 +37,23 @@ public class UsersRepository : IUsersRepository
                             .AsNoTracking()
                             .ToListAsync();
         return users;
+    }
+
+    public async Task<UserDto> GetUserByGuidAsync(Guid id)
+    {
+        //var user = await _context.Users.FindAsync(id);
+        //add photos as eager loading
+        //var user = await _context.Users.Include(p => p.Photos).SingleOrDefaultAsync(x => x.Id == id);
+        //return user;
+
+        //using automapper queryable extensions
+        var user = await _context.Users
+                    .Where(x => x.GuId == id)
+                    .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+                    .AsSplitQuery()
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync();
+        return user;
     }
 
     public async Task<UserDto> GetUserAsync(int id)

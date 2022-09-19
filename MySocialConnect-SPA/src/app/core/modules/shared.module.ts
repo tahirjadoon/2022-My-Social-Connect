@@ -4,8 +4,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
+import { TabsModule } from 'ngx-bootstrap/tabs';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ToastrModule } from 'ngx-toastr';
+import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 
 import { SiteHomeComponent } from '../../site/site-home/site-home.component';
 import { SiteRegisterComponent } from '../../site/site-register/site-register.component';
@@ -13,6 +15,9 @@ import { MemberListComponent } from '../../site/members/member-list/member-list.
 import { MemberDetailComponent } from '../../site/members/member-detail/member-detail.component';
 import { ListsComponent } from '../../site/lists/lists.component';
 import { MessagesComponent } from '../../site/messages/messages.component';
+import { MemberCardComponent } from '../../site/members/member-card/member-card.component';
+
+import { AppRoutingModule } from '../../app-routing.module';
 
 //what ever is imported here, the same should be exported as well
 @NgModule({
@@ -22,22 +27,29 @@ import { MessagesComponent } from '../../site/messages/messages.component';
     MemberListComponent,
     MemberDetailComponent,
     ListsComponent,
-    MessagesComponent
+    MessagesComponent,
+    MemberCardComponent
   ],
   imports: [
     CommonModule, 
+    AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
     BsDropdownModule.forRoot(),
-    ToastrModule.forRoot({positionClass: 'toast-bottom-right'})
+    ToastrModule.forRoot({ positionClass: 'toast-bottom-right' }),
+    TabsModule.forRoot(),
+    NgxGalleryModule
   ],
   exports: [
+    AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule, 
     FormsModule,
     BsDropdownModule,
-    ToastrModule
+    TabsModule,
+    ToastrModule,
+    NgxGalleryModule
   ]
 })
 export class SharedModule { }

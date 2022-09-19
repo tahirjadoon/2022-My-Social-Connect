@@ -6,6 +6,7 @@ namespace MSC.Api.Core.Dto;
 public class UserDto
 {
     public int Id { get; set; }
+    public Guid GuId { get; set; }
     public string UserName { get; set; }
     public string PhotoUrl { get; set; } //custom where Photo isMain
     public int Age { get; set; }

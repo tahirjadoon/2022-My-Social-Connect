@@ -1,6 +1,8 @@
 import { JsonPipe } from '@angular/common';
 import { Injectable } from '@angular/core';
 
+import { UserTokenDto } from '../models/userTokenDto.model';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -23,8 +25,7 @@ export class LocalStorageService {
     }
     return s;
   }
-  
-  
+
   getItem(key: string) {
     return JSON.parse(localStorage.getItem(key)!);
   }
@@ -37,4 +38,9 @@ export class LocalStorageService {
     localStorage.removeItem(key);
   }
 
+  //public properties to get some common pieces
+  getLoggedInUser: UserTokenDto = this.getItem(this._keyUser);
+  getLoggedinToken: string = this.getLoggedInUser?.token;
+  getloggedinUserName: string = this.getLoggedInUser?.userName;
+  
 }

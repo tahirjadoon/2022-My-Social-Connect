@@ -5,6 +5,8 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class ApiUrlService {
+  private rId = "{id}";
+
 
   //get the api base url from the environment. This url ends with a / 
   private baseUrl: string = environment.usebaseUrlHttps ? environment.webApiBaseUrlHttps : environment.webApiBaseUrlHttp;
@@ -32,4 +34,15 @@ export class ApiUrlService {
   buggyNotFound: string = `${this.buggyBaseUrl}not-found`;
   buggyServerError: string = `${this.buggyBaseUrl}server-error`;
   buggyBadRequest: string = `${this.buggyBaseUrl}bad-request`;
+
+  //users controller urls
+  private usersBaseUrl = `${this.apiBaseUrl}users/`;
+  usersAll = `${this.usersBaseUrl}`;
+  userByGuIdReplace = "[guid]";
+  userByGuId = `${this.usersBaseUrl}${this.userByGuIdReplace}/guid`; //replace [guid] with the id of the user
+  userByIdReplace = "[id]";
+  userById = `${this.usersBaseUrl}${this.userByIdReplace}/id`; //replace [id] with the id of the user
+  userByNameReplace = "[name]";
+  userByName = `${this.usersBaseUrl}${this.userByNameReplace}/name`; //replace [name] with the userName of the user
+
 }

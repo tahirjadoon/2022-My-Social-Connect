@@ -28,7 +28,7 @@ export class HttpClientService {
    */
   get<TReturn>(url: string, params = {}): Observable<TReturn> {
     return this.httpClient
-      .get<TReturn>(url, { params })
+      .get<TReturn>(url, params )
       .pipe(retry(this.retries));
   }
 

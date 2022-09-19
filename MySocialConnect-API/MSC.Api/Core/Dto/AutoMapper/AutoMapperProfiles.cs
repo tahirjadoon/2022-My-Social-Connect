@@ -23,6 +23,7 @@ public class AutoMapperProfiles : Profile
         //  ***Hint: An expression tree lambda may not contain a null propagating operator.
         //  so use a function intead
         CreateMap<AppUser, UserDto>()
+        //.ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName.ToTitleCase()))
         .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => PickMainUrl_AppUser_To_UserDto(src.Photos)))
         .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge()));
     }

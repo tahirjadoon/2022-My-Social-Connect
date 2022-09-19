@@ -33,6 +33,17 @@ public class UsersBusinessLogic : IUsersBusinessLogic
         return users;
     }
 
+    public async Task<UserDto> GetUserByGuidAsync(Guid id)
+    {
+        var user = await _usersRepo.GetUserByGuidAsync(id);
+        if (user == null) return null;
+
+        //var userDto = new UserDto { Id = user.Id, UserName = user.UserName };
+        //var userDto = _mapper.Map<UserDto>(user);
+        //return userDto;
+        return user;
+    }
+
     public async Task<UserDto> GetUserAsync(int id)
     {
         var user = await _usersRepo.GetUserAsync(id);

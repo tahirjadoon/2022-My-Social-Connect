@@ -44,9 +44,11 @@ export class ErrorInterceptor implements HttpInterceptor {
             case 401:
               //will use the toastr service to display the error
               this.toastrService.error(`${error.statusText}: ${error.error}`, error.status);
+              this.router.navigateByUrl('/');
               break;
             case 404:
               //redirect to the not found page
+              this.toastrService.error(`${error.statusText}: ${error.error}`, error.status)
               this.router.navigateByUrl('/not-found');
               break;
             case 500:

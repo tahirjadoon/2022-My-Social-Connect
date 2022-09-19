@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,6 +30,18 @@ public class UsersController : BaseApiController
         }
 
         return Ok(users);
+    }
+
+    [HttpGet("{guid}/guid")]
+    public async Task<ActionResult<UserDto>> GetUser(Guid guid)
+    {
+        var user = await _usersBl.GetUserByGuidAsync(guid);
+        if(user == null)
+        {
+            return NotFound($"No user found by guid {guid}");
+        }
+
+        return Ok(user);
     }
 
     [HttpGet("{id}/id")]

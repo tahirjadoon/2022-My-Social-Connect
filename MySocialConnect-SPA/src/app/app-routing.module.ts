@@ -25,14 +25,14 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: 'members/list', component: MemberListComponent },
-      { path: 'members/detail/:id', component: MemberDetailComponent },
+      { path: 'members/detail/:guid/:name', component: MemberDetailComponent },
       { path: 'lists', component: ListsComponent },
       { path: 'messages', component: MessagesComponent },
     ]
   },
   { path: 'test-errors', component: TestErrorsComponent },
-  { path: 'not-found', component: NotFoundComponent },
   { path: 'server-error', component: ServerErrorComponent },
+  { path: 'not-found', component: NotFoundComponent },
   { path: '**', component:  NotFoundComponent, pathMatch: 'full'} //path match full is important here
 ];
 

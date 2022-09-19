@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MSC.Api.Core.Dto;
@@ -9,6 +10,7 @@ public interface IUsersRepository
     void Update(AppUser user);
     Task<bool> SaveAllAsync();
     Task<IEnumerable<UserDto>> GetUsersAsync();
+    Task<UserDto> GetUserByGuidAsync(Guid id);
     Task<UserDto> GetUserAsync(int id);
     Task<UserDto> GetUserAsync(string userName);
     Task<AppUser> GetAppUserAsync(string userName);

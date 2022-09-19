@@ -1,1 +1,68 @@
-<p>member-detail works!</p>
+<div class="row" *ngIf="member">
+    <!--left side quick info start-->
+    <div class="col-4">
+        <div class="card">
+            <img src="{{ member.photoUrl || './assets/user.png' }}" alt="{{ member.displayName}}" class="card-img-top img-thumbnail">
+            <div class="card-body">
+                <div>
+                    <strong>Location:</strong>
+                    <p>{{ member.city }}, {{ member.country }}</p>
+                </div>
+                <div>
+                    <strong>Age:</strong>
+                    <p>{{ member.age }}</p>
+                </div>
+                <div>
+                    <strong>Last Active:</strong>
+                    <p>{{ member.lastActive }}</p>
+                </div>
+                <div>
+                    <strong>Member Since:</strong>
+                    <p>{{ member.createdOn }}</p>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="button-group d-flex">
+                    <button class="btn btn-primary">Like</button>
+                    <button class="btn btn-success">Message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--left side quick info end-->
+
+    <!--right side detail starts-->
+    <div class="col-8">
+        <!--
+        ngx-bootstrap tabs 
+        https://valor-software.com/ngx-bootstrap/#/components/tabs?tab=overview
+        styles for the member-tabset will go in the styles.css. 
+        These cannot be put in the local style sheet
+        -->
+        <tabset class="member-tabset">
+            <tab heading="About {{ member.displayName }}">
+                <h4>Description</h4>
+                <p>{{ member.introduction }}</p>
+                <h4>Looking for</h4>
+                <p>{{ member.lookingFor }}</p>
+            </tab>
+            <tab heading="Interests">
+                <h4>Interests</h4>
+                <p>{{ member.interests }}</p>
+            </tab>
+            <tab heading="Photos">
+                <div *ngIf="galleryImages">
+                    <!--applying local style rather than via a styles.css-->
+                    <ngx-gallery [options]="galleryOptions" [images]="galleryImages" style="display: inline-block; margin-bottom: 20px;"></ngx-gallery>
+                </div>
+            </tab>
+            <tab heading="Messages">
+                <h4>Messages</h4>
+                <p>Messages will go here</p>
+            </tab>
+        </tabset>
+
+    </div>
+    <!--right side detail ends-->
+
+</div>
