@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using MSC.Api.Core.Dto;
 using MSC.Api.Core.Entities;
 using MSC.Api.Core.Extensions;
@@ -15,11 +16,13 @@ public class UsersBusinessLogic : IUsersBusinessLogic
 {
     private readonly IUsersRepository _usersRepo;
     private readonly ITokenService _tokenService;
+    private readonly IMapper _mapper;
 
-    public UsersBusinessLogic(IUsersRepository usersRepo, ITokenService tokenService)
+    public UsersBusinessLogic(IUsersRepository usersRepo, ITokenService tokenService, IMapper mapper)
     {
         _tokenService = tokenService;
         _usersRepo = usersRepo;
+        _mapper = mapper;
     }
 
     public async Task<IEnumerable<UserDto>> GetUsersAsync()
@@ -66,6 +69,25 @@ public class UsersBusinessLogic : IUsersBusinessLogic
         return user;
     }
 
+    public async Task<bool> UpdateUserAsync(UserUpdateDto userUpdateDto, UserClaimGetDto claims)
+    {
+        var user = await _usersRepo.GetAppUserAsync(claims.UserName);
+        if(user == null || user.GuId != claims.Guid)
+            return false;
+
+        //data from the userUpdateDto will be moved to user while the rest of the properties will be kept as is
+        var updates = _mapper.Map(userUpdateDto, user);
+
+        //issue update but it will not save
+        _usersRepo.Update(updates);
+
+        //save update
+        if(await _usersRepo.SaveAllAsync())
+            return true;
+
+        return false;
+    }
+
     public async Task<UserTokenDto> RegisterAsync(UserRegisterDto registerUser)
     {
         if (registerUser == null)
@@ -78,6 +100,7 @@ public class UsersBusinessLogic : IUsersBusinessLogic
         var userToken = new UserTokenDto
         {
             UserName = user.UserName,
+            GuId = user.GuId, 
             Token = _tokenService.CreateToken(user)
         };
         return userToken;
@@ -104,6 +127,7 @@ public class UsersBusinessLogic : IUsersBusinessLogic
         var userToken = new UserTokenDto
         {
             UserName = user.UserName,
+            GuId = user.GuId,
             Token = _tokenService.CreateToken(user)
         };
         return userToken;

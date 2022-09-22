@@ -42,5 +42,6 @@ export class LocalStorageService {
   getLoggedInUser: UserTokenDto = this.getItem(this._keyUser);
   getLoggedinToken: string = this.getLoggedInUser?.token;
   getloggedinUserName: string = this.getLoggedInUser?.userName;
+  getLoggedinUserGuid: string = this.getLoggedInUser?.guId;
   
 }

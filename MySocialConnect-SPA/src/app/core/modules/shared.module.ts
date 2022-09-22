@@ -8,6 +8,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 import { SiteHomeComponent } from '../../site/site-home/site-home.component';
 import { SiteRegisterComponent } from '../../site/site-register/site-register.component';
@@ -16,6 +17,7 @@ import { MemberDetailComponent } from '../../site/members/member-detail/member-d
 import { ListsComponent } from '../../site/lists/lists.component';
 import { MessagesComponent } from '../../site/messages/messages.component';
 import { MemberCardComponent } from '../../site/members/member-card/member-card.component';
+import { MemberEditComponent } from '../../site/members/member-edit/member-edit.component';
 
 import { AppRoutingModule } from '../../app-routing.module';
 
@@ -28,7 +30,8 @@ import { AppRoutingModule } from '../../app-routing.module';
     MemberDetailComponent,
     ListsComponent,
     MessagesComponent,
-    MemberCardComponent
+    MemberCardComponent,
+    MemberEditComponent
   ],
   imports: [
     CommonModule, 
@@ -39,7 +42,8 @@ import { AppRoutingModule } from '../../app-routing.module';
     BsDropdownModule.forRoot(),
     ToastrModule.forRoot({ positionClass: 'toast-bottom-right' }),
     TabsModule.forRoot(),
-    NgxGalleryModule
+    NgxGalleryModule, 
+    NgxSpinnerModule,
   ],
   exports: [
     AppRoutingModule,
@@ -49,7 +53,8 @@ import { AppRoutingModule } from '../../app-routing.module';
     BsDropdownModule,
     TabsModule,
     ToastrModule,
-    NgxGalleryModule
+    NgxGalleryModule,
+    NgxSpinnerModule,
   ]
 })
 export class SharedModule { }

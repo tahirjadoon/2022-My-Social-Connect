@@ -37,6 +37,7 @@ export class ApiUrlService {
 
   //users controller urls
   private usersBaseUrl = `${this.apiBaseUrl}users/`;
+  userUpdate = `${this.usersBaseUrl}`;
   usersAll = `${this.usersBaseUrl}`;
   userByGuIdReplace = "[guid]";
   userByGuId = `${this.usersBaseUrl}${this.userByGuIdReplace}/guid`; //replace [guid] with the id of the user

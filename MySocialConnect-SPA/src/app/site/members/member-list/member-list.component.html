@@ -1,5 +1,12 @@
 <div class="row">
+    <!--
+    members$ is now observable so using async pipe
     <div *ngFor="let member of members" class="col-sm-4 col-md-2 col-12">
+        <app-member-card [member]="member"></app-member-card>
+    </div>
+    -->
+
+    <div *ngFor="let member of members$ | async" class="col-sm-4 col-md-2 col-12">
         <app-member-card [member]="member"></app-member-card>
     </div>
 </div>

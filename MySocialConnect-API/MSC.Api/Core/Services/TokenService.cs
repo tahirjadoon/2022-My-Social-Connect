@@ -38,7 +38,9 @@ public class TokenService : ITokenService
         //claims
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.NameId, user.UserName)
+            new Claim(JwtRegisteredClaimNames.NameId, user.UserName),
+            new Claim("Guid", user.GuId.ToString()),
+            new Claim("DisplayName", user.DisplayName),
         };
 
         //credentials with key

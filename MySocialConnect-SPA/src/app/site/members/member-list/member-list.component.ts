@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 
 import { userDto } from '../../../core/models/userDto.model';
 
@@ -10,15 +11,18 @@ import { MembersService } from '../../../core/services/members.service';
   styleUrls: ['./member-list.component.css']
 })
 export class MemberListComponent implements OnInit {
-
-  members: userDto[] = [];
+  //showing async operator in html
+  //members: userDto[] = [];
+  members$!: Observable<userDto[]>;
 
   constructor(private membersService: MembersService) { }
 
   ngOnInit(): void {
-    this.loadMembers();
+    //this.loadMembers();
+    this.members$ = this.membersService.getMembers();
   }
 
+  /*
   loadMembers() {
     this.membersService.getMembers().subscribe({
       next: (members : userDto[]) => {
@@ -29,5 +33,5 @@ export class MemberListComponent implements OnInit {
       }, complete: () => {}
     });
   }
-
+  */
 }

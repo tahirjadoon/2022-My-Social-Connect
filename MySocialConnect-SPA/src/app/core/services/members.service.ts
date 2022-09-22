@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 
 import { userDto } from '../models/userDto.model';
 import { HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,9 @@ import { Observable } from 'rxjs';
 export class MembersService {
   //to pass the auth token to the api, later will use interceptor
   private httpOptions;
+
+  //state mangement. We dont want to pull the user info every time
+  members: userDto[] = [];
 
   constructor(private apiUrlService: ApiUrlService, private httpClientService: HttpClientService, private localStorageService: LocalStorageService) {
     //to pass the auth token to the api, later will user interceptor
@@ -31,7 +34,13 @@ export class MembersService {
    * A GET method
    * @returns returns Observable userDto[] 
    */
-  getMembers() : Observable<userDto[]> {
+  getMembers(): Observable<userDto[]> {
+    //state mangement. when we habe members then return that
+    if (this.members.length > 0) {
+      //return observable
+      return of(this.members);
+    }
+
     const url = this.apiUrlService.usersAll;
     if (environment.displayConsoleLog) console.log(`Users allUrl: ${url}`);
     //users end point is protected by authentication so need to send the token as well 
@@ -40,7 +49,13 @@ export class MembersService {
     return this.httpClientService
       .get<userDto[]>(url, this.httpOptions);
     */
-      return this.httpClientService.get<userDto[]>(url); 
+    return this.httpClientService.get<userDto[]>(url).pipe(
+        map(members => {
+          //set the members for state management and return as well  
+          this.members = members;
+          return members;
+        })
+      ); 
     }
 
   /**
@@ -48,7 +63,15 @@ export class MembersService {
    * @param id id to fetch
    * @returns returns Observable userDto 
    */
-   getMemberByGuId(guid: string): Observable<userDto>{
+  getMemberByGuId(guid: string): Observable<userDto>{ 
+    //state management. When the member is in members array then return from there other wise get from api
+    if (this.members.length > 0) {
+      const member = this.members.find(x => x.guId === guid);
+      if (member !== undefined) {
+        return of(member);
+      }
+    }
+
     let url = this.apiUrlService.userByGuId;
     //replace [guid] with the guid in the url 
     url = url.replace(this.apiUrlService.userByGuIdReplace, guid.toString());
@@ -59,7 +82,7 @@ export class MembersService {
     return this.httpClientService
       .get<userDto>(url, this.httpOptions);
       */
-      return this.httpClientService.get<userDto>(url);
+    return this.httpClientService.get<userDto>(url);
   }
   
   /**
@@ -68,6 +91,14 @@ export class MembersService {
    * @returns returns Observable userDto 
    */
   getMemberById(id: number): Observable<userDto>{
+    //state management. When the member is in members array then return from there other wise get from api
+    if (this.members.length > 0) {
+      const member = this.members.find(x => x.id === id);
+      if (member !== undefined) {
+        return of(member);
+      }
+    }
+
     let url = this.apiUrlService.userById;
     //replace [id] with the id in the url 
     url = url.replace(this.apiUrlService.userByIdReplace, id.toString());
@@ -87,6 +118,14 @@ export class MembersService {
    * @returns returns Observable userDto 
    */
   getMemberByUserName(userName: string): Observable<userDto>{
+    //state management. When the member is in members array then return from there other wise get from api
+    if (this.members.length > 0) {
+      const member = this.members.find(x => x.userName === userName);
+      if (member !== undefined) {
+        return of(member);
+      }
+    }
+
     let url = this.apiUrlService.userByName;
     //replace [name] with the userName in the url 
     url = url.replace(this.apiUrlService.userByNameReplace, userName);
@@ -98,4 +137,22 @@ export class MembersService {
     */
       return this.httpClientService.get<userDto>(url);
   }
+    
+  /**
+   * A PUT method
+   * @param member member to update. 
+   * Only updating introduction, lookingFor, interests, city, country so still can send the full member model
+   * @returns returns Observable noContent 204 
+   */
+  updateMember(member: userDto) {
+    let url = this.apiUrlService.userUpdate;
+    if (environment.displayConsoleLog) console.log(`User update url: ${url}`);
+    return this.httpClientService.put(url, member).pipe(
+      map(() => {
+        const index = this.members.indexOf(member);
+        this.members[index] = member;
+      })
+    );
+  }
+
 }

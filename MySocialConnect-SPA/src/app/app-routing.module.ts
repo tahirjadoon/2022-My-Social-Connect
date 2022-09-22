@@ -8,10 +8,11 @@ import { ListsComponent } from './site/lists/lists.component';
 import { MessagesComponent } from './site/messages/messages.component';
 import { TestErrorsComponent } from './site/errors/test-errors/test-errors.component';
 import { NotFoundComponent } from './site/errors/not-found/not-found.component';
+import { MemberEditComponent } from './site/members/member-edit/member-edit.component';
 
 import { AuthGuard } from './core/guards/auth.guard';
 import { ServerErrorComponent } from './site/errors/server-error/server-error.component';
-
+import { PreventUnsavedChangesGuard } from './core/guards/prevent-unsaved-changes.guard';
 
 //add the components here
 //first empty one is the default route
@@ -26,6 +27,7 @@ const routes: Routes = [
     children: [
       { path: 'members/list', component: MemberListComponent },
       { path: 'members/detail/:guid/:name', component: MemberDetailComponent },
+      { path: 'members/edit', component: MemberEditComponent, canDeactivate: [PreventUnsavedChangesGuard] },
       { path: 'lists', component: ListsComponent },
       { path: 'messages', component: MessagesComponent },
     ]

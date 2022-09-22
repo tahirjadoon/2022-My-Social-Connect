@@ -14,6 +14,7 @@ import { SharedModule } from './core/modules/shared.module';
 
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
+import { SpinnerInterceptor } from './core/interceptors/spinner.interceptor';
 
 
 //common items moved to shared module
@@ -33,6 +34,7 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: SpinnerInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })

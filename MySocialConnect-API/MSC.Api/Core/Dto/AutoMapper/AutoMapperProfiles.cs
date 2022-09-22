@@ -11,13 +11,14 @@ public class AutoMapperProfiles : Profile
     {
         Map_AppUser_To_UserDto();
         Map_Photo_To_PhotoDto();
+        Map_UserUpdate_To_AppUser();
     }
 
 #region Mappers
 
     private void Map_AppUser_To_UserDto()
     {
-        //same nme propertirs will be automatically mapped
+        //same name propertirs will be automatically mapped
         //Age will also get automatically mapped since source has GetAge, the keywor Age are the same
         //PhotoUrl we'll need to map manually. will pick the url where isMain is true. Do check for null. 
         //  ***Hint: An expression tree lambda may not contain a null propagating operator.
@@ -31,6 +32,10 @@ public class AutoMapperProfiles : Profile
     private void Map_Photo_To_PhotoDto()
     {
         CreateMap<Photo, PhotoDto>();
+    }
+
+    private void Map_UserUpdate_To_AppUser(){
+        CreateMap<UserUpdateDto, AppUser>();
     }
 
 #endregion Mappers

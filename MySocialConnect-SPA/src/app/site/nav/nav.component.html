@@ -36,7 +36,7 @@
                       <span class="sr-only visually-hidden">Welcome {{userInfo.userName}}</span>
                     </button>
                     <ul id="dropdown-split" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="Welcome">
-                      <li role="menuitem"><a class="dropdown-item" routerLink="/" (click)="onNavBarItemClickCloseNavBar()">Edit Profile</a></li>
+                      <li role="menuitem"><a class="dropdown-item" routerLink="/members/edit" (click)="onNavBarItemClickCloseNavBar()">Edit Profile</a></li>
                       <li class="divider dropdown-divider"></li>
                       <li role="menuitem"><a class="dropdown-item bg-danger text-white" (click)="onLogout()">Logout</a></li>
                     </ul>

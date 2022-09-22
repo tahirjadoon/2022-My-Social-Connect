@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ public class UsersController : BaseApiController
     public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
     {
         var users = await _usersBl.GetUsersAsync();
-        if(users == null || !users.Any())
+        if (users == null || !users.Any())
         {
             return NotFound("No users found!");
         }
@@ -36,7 +37,7 @@ public class UsersController : BaseApiController
     public async Task<ActionResult<UserDto>> GetUser(Guid guid)
     {
         var user = await _usersBl.GetUserByGuidAsync(guid);
-        if(user == null)
+        if (user == null)
         {
             return NotFound($"No user found by guid {guid}");
         }
@@ -48,7 +49,7 @@ public class UsersController : BaseApiController
     public async Task<ActionResult<UserDto>> GetUser(int id)
     {
         var user = await _usersBl.GetUserAsync(id);
-        if(user == null)
+        if (user == null)
         {
             return NotFound($"No user found by id {id}");
         }
@@ -60,11 +61,30 @@ public class UsersController : BaseApiController
     public async Task<ActionResult<UserDto>> GetUser(string name)
     {
         var user = await _usersBl.GetUserAsync(name);
-        if(user == null)
+        if (user == null)
         {
             return NotFound($"No user found by name {name}");
         }
 
         return Ok(user);
+    }
+
+    [HttpPut]
+    public async Task<ActionResult> UpdateUser([FromBody] UserUpdateDto userUpdateDto)
+    {
+        //get the clams
+        var userClaims = base.GetLoggedInCalims();
+        if (userClaims == null || (!userClaims.HasGuid || !userClaims.HasUserName))
+        {
+            return BadRequest("User issue");
+        }
+
+        var isUpdate = await _usersBl.UpdateUserAsync(userUpdateDto, userClaims);
+        if (!isUpdate)
+        {
+            return BadRequest("User not updated");
+        }
+
+        return NoContent();
     }
 }
