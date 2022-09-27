@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using MSC.Api.Core.Constants;
+using MSC.Api.Core.Dto.Helpers;
 
 namespace MSC.Api.Core.Extensions;
 
@@ -66,9 +67,15 @@ public static class ConfigExtension
         return loggingLevelDefault;
     }
 
+    public static CloudinaryConfig GetCloudinaryConfig(this IConfiguration config)
+    {
+        var cloudinary = config.GetSectionValue<CloudinaryConfig>(ConfigKeyConstants.CloudinarySettingsKey, null);
+        return cloudinary;
+    }
+
     public static T GetSectionValue<T>(this ConfigurationManager config, string sectionName)
     {
-        if(!config.GetSection(sectionName).Exists())
+        if (!config.GetSection(sectionName).Exists())
         {
             return default(T);
         }
@@ -78,7 +85,7 @@ public static class ConfigExtension
 
     public static T GetSectionValue<T>(this ConfigurationManager config, string sectionName, T defaultValue)
     {
-        if(!config.GetSection(sectionName).Exists())
+        if (!config.GetSection(sectionName).Exists())
         {
             return defaultValue;
         }
@@ -89,7 +96,7 @@ public static class ConfigExtension
 
     public static T GetSectionValue<T>(this IConfiguration config, string sectionName)
     {
-        if(!config.GetSection(sectionName).Exists())
+        if (!config.GetSection(sectionName).Exists())
         {
             return default(T);
         }
@@ -99,7 +106,7 @@ public static class ConfigExtension
 
     public static T GetSectionValue<T>(this IConfiguration config, string sectionName, T defaultValue)
     {
-        if(!config.GetSection(sectionName).Exists())
+        if (!config.GetSection(sectionName).Exists())
         {
             return defaultValue;
         }

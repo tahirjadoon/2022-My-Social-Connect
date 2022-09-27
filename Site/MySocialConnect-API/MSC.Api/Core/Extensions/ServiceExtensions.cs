@@ -9,11 +9,13 @@ using MSC.Api.Core.DB;
 using MSC.Api.Core.Repositories;
 using MSC.Api.Core.Services;
 using MSC.Api.Core.Dto.AutoMapper;
+using MSC.Api.Core.Constants;
+using MSC.Api.Core.Dto.Helpers;
 
 namespace MSC.Api.Core.Extensions;
 public static class ServiceExtensions
 {
-    public static void RegisterRepos(this IServiceCollection services)
+    public static void RegisterRepos(this IServiceCollection services, IConfiguration config)
     {
         /*
         check 
@@ -26,6 +28,9 @@ public static class ServiceExtensions
         //AddTransient: a new instance is provided to every request
         //AddSingleton: objects are the same for every object and every request
 
+        //adding the Cloudinary to read data from
+        services.Configure<CloudinaryConfig>(config.GetSection(ConfigKeyConstants.CloudinarySettingsKey));
+
         //AutoMapper Profile
         services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
@@ -37,29 +42,34 @@ public static class ServiceExtensions
 
         //services
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IPhotoService, PhotoService>();
     }
-    
+
     public static string RegisterCors(this IServiceCollection services, IConfiguration config)
     {
         var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
         //https://stackoverflow.com/questions/42858335/how-to-hardcode-and-read-a-string-array-in-appsettings-json
         var allowedSpecificOrigins = config.GetAllowSpecificOrigins();
-        if(allowedSpecificOrigins != null && allowedSpecificOrigins.Any()){
-            services.AddCors(options => {
-                        options.AddPolicy(name: myAllowSpecificOrigins, 
-                                        policy => {
-                                            policy.WithOrigins(allowedSpecificOrigins.ToArray())
-                                            .AllowAnyHeader()
-                                            .AllowAnyMethod();
-                                        });
-                    });
+        if (allowedSpecificOrigins != null && allowedSpecificOrigins.Any())
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: myAllowSpecificOrigins,
+                                policy =>
+                                {
+                                    policy.WithOrigins(allowedSpecificOrigins.ToArray())
+                                    .AllowAnyHeader()
+                                    .AllowAnyMethod();
+                                });
+            });
         }
         return myAllowSpecificOrigins;
     }
 
     public static void RegisterDBContext(this IServiceCollection services, IConfiguration config)
     {
-        services.AddDbContext<DataContext>(options => {
+        services.AddDbContext<DataContext>(options =>
+        {
             options.UseSqlite(config.GetDefaultConnectionString());
         });
     }

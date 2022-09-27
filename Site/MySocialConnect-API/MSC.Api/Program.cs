@@ -21,7 +21,7 @@ https://stackoverflow.com/questions/70865207/net-6-stable-iconfiguration-setup-i
 https://stackoverflow.com/questions/69722872/asp-net-core-6-how-to-access-configuration-during-startup/70161492?noredirect=1#comment128539331_70161492
 */
 IConfiguration configuration = builder.Configuration; // allows both to access and to set up the config 
-builder.Services.RegisterRepos();
+builder.Services.RegisterRepos(configuration);
 builder.Services.RegisterDBContext(configuration);
 var myAllowSpecificOrigins = builder.Services.RegisterCors(configuration);
 builder.Services.AddIdentityServices(configuration);
@@ -47,7 +47,7 @@ try
     //now seed the users
     await Seed.SeedUsers(context);
 }
-catch(Exception ex)
+catch (Exception ex)
 {
     var logger = services.GetRequiredService<ILogger<Program>>();
     logger.LogError(ex, "An error occured during migration");
@@ -73,7 +73,7 @@ app.UseHttpsRedirection();
 //CUSTOM: Start 
 //ordering is important here. UseCors before UseAuthentication and UseAuthentication before UseAuthorization
 app.UseCors(myAllowSpecificOrigins);
-app.UseAuthentication(); 
+app.UseAuthentication();
 //CUSTOM: End
 
 app.UseAuthorization();

@@ -91,11 +91,15 @@ public class UsersRepository : IUsersRepository
         return user;
     }
 
-    public async Task<AppUser> GetAppUserAsync(string userName)
+    public async Task<AppUser> GetAppUserAsync(string userName, bool includePhotos = false)
     {
         if (userName == null)
             throw new ValidationException("Invalid userName");
-        var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName.ToLower() == userName.ToLower());
+        AppUser user = null;
+        if (!includePhotos)
+            user = await _context.Users.SingleOrDefaultAsync(x => x.UserName.ToLower() == userName.ToLower());
+        else
+            user = await _context.Users.Include(p => p.Photos).SingleOrDefaultAsync(x => x.UserName.ToLower() == userName.ToLower());
         return user;
     }
 

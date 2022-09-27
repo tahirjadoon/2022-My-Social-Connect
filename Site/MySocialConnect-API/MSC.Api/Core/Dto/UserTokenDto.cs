@@ -7,4 +7,5 @@ public class UserTokenDto
     public string UserName { get; set; }
     public Guid GuId { get; set; }
     public string Token { get; set; }
+    public string MainPhotoUrl { get; set; }
 }

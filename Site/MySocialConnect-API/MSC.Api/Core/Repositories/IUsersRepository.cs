@@ -13,7 +13,7 @@ public interface IUsersRepository
     Task<UserDto> GetUserByGuidAsync(Guid id);
     Task<UserDto> GetUserAsync(int id);
     Task<UserDto> GetUserAsync(string userName);
-    Task<AppUser> GetAppUserAsync(string userName);
+    Task<AppUser> GetAppUserAsync(string userName, bool includePhotos = false);
     Task<bool> RegisterAsync(AppUser user);
     Task<bool> UserExistsAsync(string userName);
 }

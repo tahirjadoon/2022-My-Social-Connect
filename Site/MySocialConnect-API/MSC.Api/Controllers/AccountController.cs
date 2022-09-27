@@ -20,23 +20,12 @@ public class AccountController : BaseApiController
     [HttpPost("register")]
     public async Task<ActionResult<AppUser>> Register([FromQuery] string userName, [FromBody] string password)
     {
-        try
-        {
-            var user = await _userBl.Register(userName, password);
+        var user = await _userBl.Register(userName, password);
 
-            if(user == null || user.Id <= 0)
-                return BadRequest("Unable to create registration");
+        if(user == null || user.Id <= 0)
+            return BadRequest("Unable to create registration");
 
-            return Ok(user);
-        }
-        catch(ValidationException vEx)
-        {
-            return BadRequest(vEx.Message);
-        }
-        catch
-        {
-            throw;
-        }
+        return Ok(user);
     }
     */
 
@@ -48,23 +37,12 @@ public class AccountController : BaseApiController
     [HttpPost("register")]
     public async Task<ActionResult<UserTokenDto>> Register([FromBody] UserRegisterDto registerUser)
     {
-        try
-        {
-            var user = await _userBl.RegisterAsync(registerUser);
+        var user = await _userBl.RegisterAsync(registerUser);
 
-            if (user == null || string.IsNullOrWhiteSpace(user.UserName) || string.IsNullOrWhiteSpace(user.Token))
-                return BadRequest("Unable to create registration");
+        if (user == null || string.IsNullOrWhiteSpace(user.UserName) || string.IsNullOrWhiteSpace(user.Token))
+            return BadRequest("Unable to create registration");
 
-            return Ok(user);
-        }
-        catch(ValidationException vEx)
-        {
-            return BadRequest(vEx.Message);
-        }
-        catch
-        {
-            throw;
-        }
+        return Ok(user);
     }
 
     /// <summary>
@@ -73,28 +51,13 @@ public class AccountController : BaseApiController
     /// <param name="loging"></param>
     /// <returns></returns>
     [HttpPost("login")]
-    public async Task<ActionResult<UserTokenDto>>Login([FromBody] LoginDto login)
+    public async Task<ActionResult<UserTokenDto>> Login([FromBody] LoginDto login)
     {
-         try
-        {
-            var user = await _userBl.LoginAsync(login);
+        var user = await _userBl.LoginAsync(login);
 
-            if (user == null || string.IsNullOrWhiteSpace(user.UserName) || string.IsNullOrWhiteSpace(user.Token))
-                return Unauthorized("Unable to login user");
+        if (user == null || string.IsNullOrWhiteSpace(user.UserName) || string.IsNullOrWhiteSpace(user.Token))
+            return Unauthorized("Unable to login user");
 
-            return Ok(user);
-        }
-        catch(ValidationException vEx)
-        {
-            return Unauthorized(vEx.Message);
-        }
-        catch(UnauthorizedAccessException aEx)
-        {
-            return Unauthorized(aEx.Message);
-        }
-        catch
-        {
-            throw;
-        }
+        return Ok(user);
     }
 }

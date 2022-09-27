@@ -8,4 +8,5 @@ public class ConfigKeyConstants
     public const string LoggingLevelDefault = "Logging:LogLevel:Default";
     public const string LoggingLevelMsAspNetCore = "Logging:LogLevel:Microsoft.AspNetCore";
     public const string TokenKey = "TokenKey";
+    public const string CloudinarySettingsKey = "CloudinarySettings";
 }

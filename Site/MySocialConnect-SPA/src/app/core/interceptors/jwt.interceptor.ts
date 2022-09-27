@@ -4,6 +4,7 @@ import { Observable, take } from 'rxjs';
 
 import { AccountService } from '../services/account.service';
 import { UserTokenDto } from '../models/userTokenDto.model';
+import { AppConstants } from '../constants/app-constants';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
@@ -21,7 +22,7 @@ export class JwtInterceptor implements HttpInterceptor {
     if (currentUser!) {
       request = request.clone({
         setHeaders: {
-          Authorization: `Bearer ${currentUser.token}`
+          Authorization: `${AppConstants.Bearer}${currentUser.token}`
         }
       });
     }

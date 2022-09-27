@@ -24,31 +24,34 @@ export class AccountService {
 
   constructor(private apiUrlService: ApiUrlService, private httpClientService: HttpClientService, private localStorageService: LocalStorageService) { }
 
+  //fire current user
+  private fireCurrentUser(user: UserTokenDto) {
+    this.currentUserSource.next(user);
+  }
+
   //login the user. receives LoginDto and returns UserTokenDto
   login(loginDto: LoginDto) {
     var url = this.apiUrlService.accountLogin;
 
-    if(environment.displayConsoleLog)
-      console.log(`AccountService LoginUrl: ${url}`);
+    if(environment.displayConsoleLog) console.log(`AccountService LoginUrl: ${url}`);
 
-    //this is directly calling the http post method
-    //return this.http.post(url, loginDto);
-
-    //using the httpClientService to make the http calls
-    //we'll also persist the user in the local storage
+    //persist the user in the local storage
     return this.httpClientService
       .post<UserTokenDto>(url, loginDto)
       .pipe(
         map((respone: UserTokenDto) => {
           const user = respone;
-          if (user) {
-            //store the user in local storage
-            this.localStorageService.setItem(this.localStorageService._keyUser, user);
-            this.currentUserSource.next(user);
-          }
+          if(environment.displayConsoleLog) console.log(user);
+          if (user) this.setAndFireCurrentUser(user);
           return user;
         })
       );
+  }
+
+  setAndFireCurrentUser(user: UserTokenDto) {
+    //store the user in local storage
+    this.localStorageService.setItem(this.localStorageService._keyUser, user);
+    this.fireCurrentUser(user);
   }
 
   getAndFireCurrentUser() {
@@ -56,14 +59,10 @@ export class AccountService {
     this.fireCurrentUser(user);
   }
 
-  fireCurrentUser(user: UserTokenDto) {
-    this.currentUserSource.next(user);
-  }
-
   logout() {
     //remove the user from local storage
     this.localStorageService.removeItem(this.localStorageService._keyUser);
-    this.currentUserSource.next(null!);
+    this.fireCurrentUser(null!);
   }
 
   register(registerDto: SiteRegisterDto) {
@@ -77,11 +76,7 @@ export class AccountService {
       .pipe(
         map((respone: UserTokenDto) => {
           const user = respone;
-          if (user) {
-            //store the user in local storage
-            this.localStorageService.setItem(this.localStorageService._keyUser, user);
-            this.currentUserSource.next(user);
-          }
+          if (user) this.setAndFireCurrentUser(user);
           return user;
         })
       );

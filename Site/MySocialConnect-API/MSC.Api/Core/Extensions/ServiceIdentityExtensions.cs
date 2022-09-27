@@ -8,7 +8,7 @@ namespace MSC.Api.Core.Extensions;
 
 public static class IdentityServiceExtensions
 {
-        public static void AddIdentityServices(this IServiceCollection services, IConfiguration config)
+    public static void AddIdentityServices(this IServiceCollection services, IConfiguration config)
     {
         var tokenKey = Encoding.UTF8.GetBytes(config.GetTokenKey());
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

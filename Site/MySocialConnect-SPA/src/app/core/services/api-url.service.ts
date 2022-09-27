@@ -37,13 +37,17 @@ export class ApiUrlService {
 
   //users controller urls
   private usersBaseUrl = `${this.apiBaseUrl}users/`;
+  userByIdReplace = "[id]";
+  userByNameReplace = "[name]";
+  userByGuIdReplace = "[guid]";
+  userPhotoIdReplace = "[photoId]";
+
   userUpdate = `${this.usersBaseUrl}`;
   usersAll = `${this.usersBaseUrl}`;
-  userByGuIdReplace = "[guid]";
   userByGuId = `${this.usersBaseUrl}${this.userByGuIdReplace}/guid`; //replace [guid] with the id of the user
-  userByIdReplace = "[id]";
   userById = `${this.usersBaseUrl}${this.userByIdReplace}/id`; //replace [id] with the id of the user
-  userByNameReplace = "[name]";
   userByName = `${this.usersBaseUrl}${this.userByNameReplace}/name`; //replace [name] with the userName of the user
-
+  userAddPhoto = `${this.usersBaseUrl}add/photo`;
+  userSetPhotoMain = `${this.usersBaseUrl}set/photo/${this.userPhotoIdReplace}/main`;//replace [photoId] with the photoId
+  userDeletePhoto =  `${this.usersBaseUrl}delete/${this.userPhotoIdReplace}/photo`;//replace [photoId] with the photoId
 }

@@ -14,7 +14,15 @@
 
 # Built Visual Studio Code Extensions
 *.vsix
+########################
+# Cloudinary           #
+########################
+[Cc]loudinary/
 
+########################
+# has cloudingary keys #
+########################
+appsettings.json
 
 ########################
 # Visual Studio DotNet #

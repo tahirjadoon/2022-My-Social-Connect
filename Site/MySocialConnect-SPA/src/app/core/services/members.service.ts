@@ -1,14 +1,18 @@
 import { Injectable } from '@angular/core';
+import { map, Observable, of } from 'rxjs';
 
 import { ApiUrlService } from './api-url.service';
 import { HttpClientService } from './http-client.service';
 import { LocalStorageService } from './local-storage.service';
 
-import { environment } from 'src/environments/environment';
+import { AppConstants } from '../constants/app-constants';
+
+import { environment } from '../../../environments/environment';
 
 import { userDto } from '../models/userDto.model';
 import { HttpHeaders } from '@angular/common/http';
-import { map, Observable, of } from 'rxjs';
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +29,7 @@ export class MembersService {
     //not using this any more, using the interceptor
     this.httpOptions = {
       headers: new HttpHeaders({
-        Authorization: 'Bearer ' + localStorageService.getLoggedinToken
+        Authorization: AppConstants.Bearer + localStorageService.getLoggedinToken
       })
     };
   }
@@ -153,6 +157,33 @@ export class MembersService {
         this.members[index] = member;
       })
     );
+  }
+
+  /**
+ * A PUT method to make the photo main
+ * @param photoId photo id to make active 
+ * 
+ * @returns returns nocontent 
+ */
+  setMainPhoto(photoId: number) {
+    let url = this.apiUrlService.userSetPhotoMain;
+    url = url.replace(this.apiUrlService.userPhotoIdReplace, photoId.toString());
+    if (environment.displayConsoleLog) console.log(`setPhotoActive url: ${url}`);
+    //pass an empty object since it is a put request
+    return this.httpClientService.put(url, {});
+  }
+
+  /**
+ * A DELETE method to delete the photo
+ * @param photoId photo id to delete 
+ * 
+ * @returns returns Ok
+ */
+  deletePhoto(photoId: number) {
+    let url = this.apiUrlService.userDeletePhoto;
+    url = url.replace(this.apiUrlService.userPhotoIdReplace, photoId.toString());
+    if (environment.displayConsoleLog) console.log(`deletePhoto url: ${url}`);
+    return this.httpClientService.delete(url);
   }
 
 }
