@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
@@ -12,9 +13,11 @@ public class AutoMapperProfiles : Profile
         Map_AppUser_To_UserDto();
         Map_Photo_To_PhotoDto();
         Map_UserUpdate_To_AppUser();
+        Map_UserRegister_To_AppUser();
+        Map_AppUser_To_UserTokenDto();
     }
 
-#region Mappers
+    #region Mappers
 
     private void Map_AppUser_To_UserDto()
     {
@@ -34,13 +37,29 @@ public class AutoMapperProfiles : Profile
         CreateMap<Photo, PhotoDto>();
     }
 
-    private void Map_UserUpdate_To_AppUser(){
+    private void Map_UserUpdate_To_AppUser()
+    {
         CreateMap<UserUpdateDto, AppUser>();
     }
 
-#endregion Mappers
+    private void Map_UserRegister_To_AppUser()
+    {
+        CreateMap<UserRegisterDto, AppUser>()
+        .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName.ToLowerInvariant()))
+        .ForMember(dest => dest.GuId, opt => opt.MapFrom(src => Guid.NewGuid()))
+        ;
+    }
 
-#region Helper Functions
+    private void Map_AppUser_To_UserTokenDto()
+    {
+        CreateMap<AppUser, UserTokenDto>()
+        .ForMember(dest => dest.MainPhotoUrl, opt => opt.MapFrom(src => PickMainUrl_AppUser_To_UserDto(src.Photos)))
+        ;
+    }
+
+    #endregion Mappers
+
+    #region Helper Functions
 
     //converted to static method after conversion to using automapper queryable extensions
     private static string PickMainUrl_AppUser_To_UserDto(ICollection<Photo> photos)
@@ -50,6 +69,6 @@ public class AutoMapperProfiles : Profile
         return url;
     }
 
-#endregion Helper Functions
+    #endregion Helper Functions
 
 }

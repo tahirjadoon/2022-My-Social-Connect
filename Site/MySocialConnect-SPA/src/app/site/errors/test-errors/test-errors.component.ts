@@ -86,7 +86,7 @@ export class TestErrorsComponent implements OnInit {
   }
 
   getValidationError() {
-    const register: SiteRegisterDto = { userName: "", password: "pas" };
+    const register: SiteRegisterDto = new SiteRegisterDto("", "pas", "", "", new Date(), "", "");
     var url = this.apiUrlService.accountRegisterUser;
     if (environment.displayConsoleLog) {
       console.log(`ValidationURL: ${url}`);

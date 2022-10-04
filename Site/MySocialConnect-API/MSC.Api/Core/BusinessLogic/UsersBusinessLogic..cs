@@ -102,13 +102,9 @@ public class UsersBusinessLogic : IUsersBusinessLogic
         if (user == null || user.Id <= 0)
             throw new ValidationException("Unable to create registration"); //exception middleware
 
-        var userToken = new UserTokenDto
-        {
-            UserName = user.UserName,
-            GuId = user.GuId,
-            Token = _tokenService.CreateToken(user),
-            MainPhotoUrl = string.Empty
-        };
+        var userToken = _mapper.Map<UserTokenDto>(user);
+        userToken.Token = _tokenService.CreateToken(user);
+
         return userToken;
     }
 
@@ -130,16 +126,10 @@ public class UsersBusinessLogic : IUsersBusinessLogic
         if (!hashKeyLogin.Hash.AreEqual(user.PasswordHash))
             throw new UnauthorizedAccessException("Either username or password is wrong"); //exception middleware
 
-        //get the main photo url 
-        var mainPhotoUrl = user.Photos?.FirstOrDefault(x => x.IsMain)?.Url ?? "";
+        //build and return user token
+        var userToken = _mapper.Map<UserTokenDto>(user);
+        userToken.Token = _tokenService.CreateToken(user);
 
-        var userToken = new UserTokenDto
-        {
-            UserName = user.UserName,
-            GuId = user.GuId,
-            Token = _tokenService.CreateToken(user),
-            MainPhotoUrl = mainPhotoUrl
-        };
         return userToken;
     }
 
@@ -159,7 +149,9 @@ public class UsersBusinessLogic : IUsersBusinessLogic
             throw new ValidationException("Unable to handle provided password"); //exception middleware
 
         //convert to AppUser to register
-        var user = new AppUser { UserName = registerUser.UserName, PasswordHash = hashKey.Hash, PasswordSalt = hashKey.Salt };
+        var user = _mapper.Map<AppUser>(registerUser);
+        user.PasswordHash = hashKey.Hash;
+        user.PasswordSalt = hashKey.Salt;
 
         var isRegister = await _usersRepo.RegisterAsync(user);
         if (!isRegister)

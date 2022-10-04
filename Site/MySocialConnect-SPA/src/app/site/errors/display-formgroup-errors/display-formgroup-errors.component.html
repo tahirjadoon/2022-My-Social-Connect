@@ -1,0 +1,6 @@
+<div class="" *ngIf="key && errors">
+    <ul class="list-inline">
+        <li class="list-inline-item"><strong>{{ key }} Validator(s): </strong></li>
+        <li class="list-inline-item" *ngFor="let item of errors | validatorsTransform">{{ item }}</li>
+    </ul>
+</div>

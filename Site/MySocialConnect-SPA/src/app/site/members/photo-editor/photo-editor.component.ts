@@ -108,6 +108,11 @@ export class PhotoEditorComponent implements OnInit, OnDestroy {
       if (response) {
         const photo = <PhotoDto>JSON.parse(response);
         this.member.photos.push(photo);
+        if (photo.isMain) {
+          this.currentUser.mainPhotoUrl = photo.url;
+          this.member.photoUrl = photo.url;
+          this.accountService.setAndFireCurrentUser(this.currentUser);
+        }
       }
     }
   }

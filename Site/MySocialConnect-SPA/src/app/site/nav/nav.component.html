@@ -31,8 +31,8 @@
                             and structural directive *dropdownMenu-->
                 <div *ngIf="isLoggedIn" class="btn-group" dropdown>
                     <button type="button" class="btn btn-info">
-                        <img src="{{ userInfo.mainPhotoUrl }}" alt="{{ userInfo.userName | titlecase }}" class="me-2">
-                        Welcome {{userInfo.userName | titlecase}}</button>
+                        <img src="{{ userInfo.mainPhotoUrl || './assets/user.png' }}" alt="{{ userInfo.userName | titlecase }}" class="me-2">
+                        Welcome {{userInfo.displayName || userInfo.userName | titlecase}}</button>
                     <button id="button-split" type="button" dropdownToggle class="btn btn-info dropdown-toggle dropdown-toggle-split" aria-controls="dropdown-split">
                       <span class="caret"></span>
                       <span class="sr-only visually-hidden">Welcome {{userInfo.userName}}</span>

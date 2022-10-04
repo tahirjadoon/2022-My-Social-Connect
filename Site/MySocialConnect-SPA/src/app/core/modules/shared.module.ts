@@ -2,10 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { NgxSpinnerModule } from 'ngx-spinner';
@@ -20,8 +21,14 @@ import { MessagesComponent } from '../../site/messages/messages.component';
 import { MemberCardComponent } from '../../site/members/member-card/member-card.component';
 import { MemberEditComponent } from '../../site/members/member-edit/member-edit.component';
 import { PhotoEditorComponent } from '../../site/members/photo-editor/photo-editor.component';
+import { DisplayFormgroupErrorsComponent } from '../../site/errors/display-formgroup-errors/display-formgroup-errors.component';
+
+import { TextInputComponent } from '../../site/form-controls/text-input/text-input.component';
 
 import { AppRoutingModule } from '../../app-routing.module';
+
+import { ValidatorsTransformPipe } from '../pipes/validators-transform.pipe';
+import { DateInputComponent } from '../../site/form-controls/date-input/date-input.component';
 
 
 //what ever is imported here, the same should be exported as well
@@ -35,7 +42,11 @@ import { AppRoutingModule } from '../../app-routing.module';
     MessagesComponent,
     MemberCardComponent,
     MemberEditComponent,
-    PhotoEditorComponent
+    PhotoEditorComponent,
+    DisplayFormgroupErrorsComponent,
+    TextInputComponent,
+    DateInputComponent,
+    ValidatorsTransformPipe,
   ],
   imports: [
     CommonModule, 
@@ -43,7 +54,9 @@ import { AppRoutingModule } from '../../app-routing.module';
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     BsDropdownModule.forRoot(),
+    BsDatepickerModule.forRoot(),
     ToastrModule.forRoot({ positionClass: 'toast-bottom-right' }),
     TabsModule.forRoot(),
     NgxGalleryModule, 
@@ -55,7 +68,9 @@ import { AppRoutingModule } from '../../app-routing.module';
     BrowserAnimationsModule,
     HttpClientModule, 
     FormsModule,
+    ReactiveFormsModule,
     BsDropdownModule,
+    BsDatepickerModule,
     TabsModule,
     ToastrModule,
     NgxGalleryModule,
