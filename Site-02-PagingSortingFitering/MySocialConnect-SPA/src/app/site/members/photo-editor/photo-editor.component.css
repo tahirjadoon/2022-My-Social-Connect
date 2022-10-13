@@ -1,0 +1,16 @@
+hr{
+    border: 1px dashed black; 
+    background-color: #fff;
+}
+img.img-thumbnail{
+    height: 100px;
+    min-width: 100px !important;
+    margin-bottom: 2px;
+}
+.nv-file-over{
+    border: dotted 3px #FF4500;
+}
+/*Remove "no files selected text next to the buttons" */
+input[type=file]{
+    color: transparent;
+}

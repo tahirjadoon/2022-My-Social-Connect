@@ -1,0 +1,13 @@
+<ng-container>
+    <button class="btn btn-outline-primary mt-3" (click)="getNotFoundError()">Test NotFound Error</button><br>
+    <button class="btn btn-outline-primary mt-3" (click)="getBadRequestError()">Test BadRequest Error</button><br>
+    <button class="btn btn-outline-primary mt-3" (click)="getServerError()">Test Server Error</button><br>
+    <button class="btn btn-outline-primary mt-3" (click)="getAuthError()">Test Auth Error</button><br>
+    <button class="btn btn-outline-primary mt-3" (click)="getValidationError()">Test Validation Error</button>
+
+    <div class="row mt-5" *ngIf="validationErrors.length > 0">
+        <ul class="text-danger">
+            <li *ngFor="let error of validationErrors">{{ error }}</li>
+        </ul>
+    </div>
+</ng-container>
