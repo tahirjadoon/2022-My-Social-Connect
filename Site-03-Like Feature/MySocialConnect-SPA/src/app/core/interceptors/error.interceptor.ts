@@ -34,11 +34,14 @@ export class ErrorInterceptor implements HttpInterceptor {
                 throw modalStateErrors.flat();
                 //400 validation errors, end
               }
-              else {
+              else if (typeof(error.error) === 'object') {
                 //400 all other errors, start
                 //will use the toastr service to display the error
                 this.toastrService.error(`${error.statusText}: ${error.error}`, error.status);
                 //400 all other errors, end
+              }
+              else {
+                this.toastrService.error(error.error, error.status);
               }
               break;
             case 401:

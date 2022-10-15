@@ -37,9 +37,11 @@ public static class ServiceExtensions
 
         //repositories
         services.AddScoped<IUsersRepository, UsersRepository>();
+        services.AddScoped<ILikesRepository, LikesRepository>();
 
         //business logic
         services.AddScoped<IUsersBusinessLogic, UsersBusinessLogic>();
+        services.AddScoped<ILikesBusinessLogic, LikesBusinessLogic>();
 
         //action filters
         services.AddScoped<LogUserActivityFilter>();

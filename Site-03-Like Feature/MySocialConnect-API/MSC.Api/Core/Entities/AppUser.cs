@@ -28,4 +28,14 @@ public class AppUser
     public DateTime LastActive { get; set; } = DateTime.Now;
     public DateTime CreatedOn { get; set; } = DateTime.Now;
     public DateTime UpdatedOn { get; set; } = DateTime.Now;
+
+    /// <summary>
+    /// The users that have liked logged in user. CheckDB Context for relationships
+    /// </summary>
+    public ICollection<UserLike> UsersLikedMe { get; set; }
+
+    /// <summary>
+    /// The users that the logged in user liked. CheckDB Context for relationships
+    /// </summary>
+    public ICollection<UserLike> UsersILiked { get; set; }
 }

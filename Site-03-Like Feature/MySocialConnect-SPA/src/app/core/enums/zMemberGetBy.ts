@@ -1,5 +1,5 @@
 export enum zMemberGetBy{
-    id = 1, 
-    userName = 2,
-    guid = 3, 
+    id = 0, 
+    userName = 1,
+    guid = 2, 
 }

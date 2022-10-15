@@ -1,1 +1,32 @@
-<p>lists works!</p>
+<div class="text-center mt-3">
+    <h2>{{ userTypeString === zUserLikeType[zUserLikeType.liked] ? 'Members I like' : 'Members who like me' }}</h2>
+</div>
+
+<div class="container mt-3">
+    <div class="row">
+        <div class="btn-group" name="userLikeType">
+            <label type="button" class="btn btn-small btn-info my-1 me-1" [(ngModel)]="likeParams.userLikeType" btnRadio="{{ zUserLikeType.liked }}" tabindex="0" role="button" (click)="loadLikes()">Members I like</label>
+            <label type="button" class="btn btn-small btn-info my-1" [(ngModel)]="likeParams.userLikeType" btnRadio="{{ zUserLikeType.likedBy }}" tabindex="1" role="button" (click)="loadLikes()">Members who like me</label>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3" *ngIf="members">
+    <div class="col-2" *ngFor="let member of members">
+        <app-member-card [member]="member!"></app-member-card>
+    </div>
+</div>
+
+<div class="d-flex justify-content-center" *ngIf="pagination">
+    <pagination 
+            [boundaryLinks]="true" 
+            [totalItems]="pagination.totalItems"
+            [itemsPerPage]="pagination.itemsPerPage"
+            [(ngModel)]="pagination.currentPage"
+            (pageChanged)="onPageChanged($event)"
+            previousText="&lsaquo;" 
+            nextText="&rsaquo;" 
+            firstText="&laquo;" 
+            lastText="&raquo;">
+    </pagination>
+</div>

@@ -49,5 +49,13 @@ export class ApiUrlService {
   userByName = `${this.usersBaseUrl}${this.userByNameReplace}/name`; //replace [name] with the userName of the user
   userAddPhoto = `${this.usersBaseUrl}add/photo`;
   userSetPhotoMain = `${this.usersBaseUrl}set/photo/${this.userPhotoIdReplace}/main`;//replace [photoId] with the photoId
-  userDeletePhoto =  `${this.usersBaseUrl}delete/${this.userPhotoIdReplace}/photo`;//replace [photoId] with the photoId
+  userDeletePhoto = `${this.usersBaseUrl}delete/${this.userPhotoIdReplace}/photo`;//replace [photoId] with the photoId
+  
+  //like constroller urls
+  private likesBaseUrl = `${this.apiBaseUrl}likes/`;
+  likeUserIdReplace = "[id]";
+  likeUserNameReplace = "[name]";
+  likesForUser = `${this.likesBaseUrl}user/likes`;
+  likeAdd = `${this.likesBaseUrl}${this.likeUserIdReplace}/like/${this.likeUserNameReplace}`; //replace [id] with userid and [name] with logged in user name
+
 }

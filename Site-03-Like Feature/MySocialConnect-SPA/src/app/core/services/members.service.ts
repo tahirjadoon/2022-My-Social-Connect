@@ -13,11 +13,13 @@ import { environment } from '../../../environments/environment';
 
 import { UserTokenDto } from '../models/userTokenDto.model';
 import { userDto } from '../models/userDto.model';
+import { LikeDto } from '../models/likeDto';
 import { PaginatedResult } from '../models/helpers/paginated-result.model';
 import { UserParams } from '../models/helpers/user-params.model';
+import { LikeParams } from '../models/helpers/like-params.model';
 
 import { zMemberGetBy } from '../enums/zMemberGetBy';
-
+import { zUserLikeType } from '../enums/zUserLikeType';
 
 @Injectable({
   providedIn: 'root'
@@ -224,7 +226,7 @@ export class MembersService {
 
     if (!by || !key || this.members.length <= 0) return member;
 
-    switch (by) {
+    switch (by as zMemberGetBy) {
       case zMemberGetBy.id: 
         member =  this.members.find(x => x.id === +key);
         break;
@@ -251,16 +253,16 @@ export class MembersService {
     }
     if (members.length <= 0) return member;
 
-    switch (by) {
-      case zMemberGetBy.id: 
-        member =  members.find((x: userDto) => x.id === +key);
+    switch (by as zMemberGetBy) {
+      case zMemberGetBy.id:
+        member = members.find((x: userDto) => x.id === +key);
         break;
       case zMemberGetBy.userName:
-        member =  members.find((x: userDto) => x.userName === key);
+        member = members.find((x: userDto) => x.userName === key);
         break;
-      case zMemberGetBy.guid: 
-        member =  members.find((x: userDto) => x.guId === key);
-        break; 
+      case zMemberGetBy.guid:
+        member = members.find((x: userDto) => x.guId === key);
+        break;
     }
 
     return member;
@@ -308,6 +310,30 @@ export class MembersService {
     url = url.replace(this.apiUrlService.userPhotoIdReplace, photoId.toString());
     if (environment.displayConsoleLog) console.log(`deletePhoto url: ${url}`);
     return this.httpClientService.delete(url);
+  }
+
+  /**
+   * A add method to add likes
+   * @param id id of the user getting liked 
+   * 
+   * @returns returns Ok
+   */
+  addLike(id: number) : Observable<any> {
+    var url = this.apiUrlService.likeAdd
+      .replace(this.apiUrlService.likeUserIdReplace, id.toString())
+      .replace(this.apiUrlService.likeUserNameReplace, this.user.userName);
+    if (environment.displayConsoleLog) console.log(`addLike: ${url}`);
+    return this.httpClientService.post(url, {});
+  }
+
+  //not using likeDto instead using partial userDto since the properties are the same
+  getLikes(like_parms: LikeParams) {
+    //add the pagination and filtering parameters
+    const params = like_parms.getLikesSearchParams();
+    var url = this.apiUrlService.likesForUser;
+    if (environment.displayConsoleLog) console.log(`getLikes url: ${url} params: ${params}`);
+
+    return this.getPaginatedResult<Partial<userDto[]>>(url, params);
   }
 
 }
