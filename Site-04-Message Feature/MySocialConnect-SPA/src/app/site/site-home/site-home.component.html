@@ -1,0 +1,26 @@
+<div class="container mt-5">
+    <h1><span class="title">{{title}}</span> Home</h1>
+</div>
+
+<div *ngIf="!isLoggedIn" class="container mt-5">
+    <div *ngIf="!registerMode" style="text-align: center">
+        <h3>Find your <span class="title">{{title}}</span> matches!</h3>
+        <p class="lead">Come on in to see who you know or want to connect with... all you need to do is sign up!</p>
+        
+        <div class="text-center">
+            <button (click)="onRegisterToggle()" class="btn btn-primary btn-lg mr-2">Register</button>&nbsp;
+            <button class="btn btn-info btn-lg ml-2">Learn More</button>
+        </div>
+
+    </div>
+
+    <div *ngIf="registerMode" class="conatiner">
+        <div class="row justify-content-center">
+            <div class="col-4">
+                <!--cancelRegister is output in site-register, child is telling the parent that cancel button got clicked-->
+                <!--pass the event to a function to reset the register mode-->
+                <app-site-register (cancelRegister)="onCancelRegisterMode($event)"></app-site-register>
+            </div>
+        </div>
+    </div>
+</div>
