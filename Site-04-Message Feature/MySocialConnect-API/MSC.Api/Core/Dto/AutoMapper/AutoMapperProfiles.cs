@@ -15,6 +15,7 @@ public class AutoMapperProfiles : Profile
         Map_UserUpdate_To_AppUser();
         Map_UserRegister_To_AppUser();
         Map_AppUser_To_UserTokenDto();
+        Map_Message_to_MessageDto();
     }
 
     #region Mappers
@@ -28,7 +29,7 @@ public class AutoMapperProfiles : Profile
         //  so use a function intead
         CreateMap<AppUser, UserDto>()
         //.ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName.ToTitleCase()))
-        .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => PickMainUrl_AppUser_To_UserDto(src.Photos)))
+        .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => PickMainUrl(src.Photos)))
         .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge()));
     }
 
@@ -53,7 +54,17 @@ public class AutoMapperProfiles : Profile
     private void Map_AppUser_To_UserTokenDto()
     {
         CreateMap<AppUser, UserTokenDto>()
-        .ForMember(dest => dest.MainPhotoUrl, opt => opt.MapFrom(src => PickMainUrl_AppUser_To_UserDto(src.Photos)))
+        .ForMember(dest => dest.MainPhotoUrl, opt => opt.MapFrom(src => PickMainUrl(src.Photos)))
+        ;
+    }
+
+    private void Map_Message_to_MessageDto()
+    {
+        CreateMap<Message, MessageDto>()
+        .ForMember(dest => dest.SenderPhotoUrl, opt => opt.MapFrom(src => PickMainUrl(src.Sender.Photos)))
+        .ForMember(dest => dest.ReceipientPhotoUrl, opt => opt.MapFrom(src => PickMainUrl(src.Receipient.Photos)))
+        .ForMember(dest => dest.SenderGuid, opt => opt.MapFrom(src => src.Sender.GuId))
+        .ForMember(dest => dest.ReceipientGuid, opt => opt.MapFrom(src => src.Receipient.GuId))
         ;
     }
 
@@ -62,7 +73,7 @@ public class AutoMapperProfiles : Profile
     #region Helper Functions
 
     //converted to static method after conversion to using automapper queryable extensions
-    private static string PickMainUrl_AppUser_To_UserDto(ICollection<Photo> photos)
+    private static string PickMainUrl(ICollection<Photo> photos)
     {
         if (photos == null || !photos.Any()) return string.Empty;
         var url = photos.FirstOrDefault(x => x.IsMain)?.Url ?? string.Empty;

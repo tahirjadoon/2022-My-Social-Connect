@@ -1,0 +1,46 @@
+<div class="card">
+    <!--display messages start-->
+    <div class="card-body">
+        <!--no messages section-->
+        <div *ngIf="!messages || messages.length === 0">No messages yet... say hi by using the message box below</div>
+        <!--messages start-->
+        <ul *ngIf="messages && messages.length > 0" class="chat">
+            <li *ngFor="let message of messages!">
+                <div>
+                    <span class="chat-image float-end">
+                        <img src="{{ message.senderPhotoUrl || './assets/user.png' }}" alt="{{ message.senderUsername | titlecase }}" class="rounded-circle">
+                    </span>
+                    <div class="chat-body">
+                        <div class="header">
+                            <small class="text-muted">
+                                <span class="fa fa-clock-o">{{ message.dateMessageSent | timeago }}</span>
+                                <!--for the other user, not the logged in user-->
+                                <span class="text-danger ms-1" *ngIf="!message.dateMessageRead && message.senderId !== userId">(unread)</span>
+                                <span class="text-success ms-1" *ngIf="message.dateMessageRead && message.senderId !== userId">(read {{ message.dateMessageRead | timeago }})</span>
+
+                            </small>
+                        </div>
+                    </div>
+                    <p>{{ message.messageContent }}</p>
+                </div>
+            </li>
+        </ul>
+        <!--messages end-->
+
+    </div>
+    <!--display messages end-->
+
+    <!--send message start -->
+    <div class="card-footer">
+        <form #messageForm="ngForm" (ngSubmit)="onSendMessage()" autocomplete="off">
+            <div class="input-group">
+
+                <input type="text" name="messageContent" required class="form-control" placeholder="Send a private message" [(ngModel)]="messageContent">
+                <button [disabled]="!messageForm.valid" class="btn btn-primary ms-1 me-1" type="submit">Send</button>
+                <button [disabled]="!messageContent || messageContent === ''" class="btn btn-danger" type="reset">Clear</button>
+            </div>
+        </form>
+    </div>
+    <!--send message end -->
+
+</div>

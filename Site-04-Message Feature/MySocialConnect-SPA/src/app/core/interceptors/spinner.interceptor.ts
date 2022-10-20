@@ -27,7 +27,7 @@ export class SpinnerInterceptor implements HttpInterceptor {
     //when the request is complete then hide it so tap into next
     return next.handle(request).pipe(
       //fake delay for showing the spinner. real work application no delay is needed
-      delay(1000), //one second 
+      //delay(1000), //one second 
       finalize(() => {
         this.spinnerService.hide();
       })

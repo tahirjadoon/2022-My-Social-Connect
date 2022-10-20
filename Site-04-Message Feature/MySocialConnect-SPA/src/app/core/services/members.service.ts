@@ -6,6 +6,7 @@ import { ApiUrlService } from './api-url.service';
 import { HttpClientService } from './http-client.service';
 import { LocalStorageService } from './local-storage.service';
 import { AccountService } from './account.service';
+import { PaginationService } from './pagination.service';
 
 import { AppConstants } from '../constants/app-constants';
 
@@ -40,7 +41,8 @@ export class MembersService {
       private httpClientService: HttpClientService,
       private localStorageService: LocalStorageService,
       private http: HttpClient,
-      private accountService: AccountService) {
+      private accountService: AccountService,
+      private pageService: PaginationService) {
     //to pass the auth token to the api, later will user interceptor
     //not using this any more, using the interceptor
     this.httpOptions = {
@@ -121,7 +123,7 @@ export class MembersService {
       return of(cacheReuslt);
     
     //add the pagination and filtering parameters
-    const params = user_params.getMemberSearchParams();
+    const params = user_params.getSearchParams();
     //url
     const url = this.apiUrlService.usersAll;
     if (environment.displayConsoleLog) console.log(`Users allUrl: ${url} params: ${params}`);
@@ -129,28 +131,13 @@ export class MembersService {
     //users end point is protected by authentication so need to send the token as well 
     //check jwt interceptor for details
     
-    return this.getPaginatedResult<userDto[]>(url, params).pipe(
+    return this.pageService.getPaginatedResult<userDto[]>(url, params).pipe(
       map(response => {
         //set the cache
         this.memberCache.set(cacheKey, response);
         return response;
       })
     );  
-  }
-
-  private getPaginatedResult<T>(url: string, params: HttpParams) {
-    const paginatedResult: PaginatedResult<T> = new PaginatedResult<T>();
-    
-    return this.httpClientService.getWithFullResponse<T>(url, params).pipe(
-      map(response => {
-        paginatedResult.result = response.body!;
-        const paginationHeader = response.headers.get(AppConstants.PaginationHeader);
-        if (paginationHeader !== null) {
-          paginatedResult.pagination = JSON.parse(paginationHeader);
-        }
-        return paginatedResult;
-      })
-    );
   }
 
   /**
@@ -329,11 +316,11 @@ export class MembersService {
   //not using likeDto instead using partial userDto since the properties are the same
   getLikes(like_parms: LikeParams) {
     //add the pagination and filtering parameters
-    const params = like_parms.getLikesSearchParams();
+    const params = like_parms.getSearchParams();
     var url = this.apiUrlService.likesForUser;
     if (environment.displayConsoleLog) console.log(`getLikes url: ${url} params: ${params}`);
 
-    return this.getPaginatedResult<Partial<userDto[]>>(url, params);
+    return this.pageService.getPaginatedResult<Partial<userDto[]>>(url, params);
   }
 
 }

@@ -16,7 +16,6 @@ import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { SpinnerInterceptor } from './core/interceptors/spinner.interceptor';
 
-
 //common items moved to shared module
 @NgModule({
   declarations: [
@@ -24,7 +23,7 @@ import { SpinnerInterceptor } from './core/interceptors/spinner.interceptor';
     NavComponent,
     TestErrorsComponent,
     NotFoundComponent,
-    ServerErrorComponent
+    ServerErrorComponent,
   ],
   imports: [
     BrowserModule,

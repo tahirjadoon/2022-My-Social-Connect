@@ -1,21 +1,19 @@
 import { HttpParams } from "@angular/common/http";
-
-import { zUserLikeType } from "../../enums/zUserLikeType";
-
+import { zMessageType } from "../../enums/zMessageType";
 import { PageParams } from "./page-params.model";
 
-export class LikeParams extends PageParams {
+export class MessageParams extends PageParams {
 
-    userLikeType: zUserLikeType = zUserLikeType.liked;
+    messageType: zMessageType = zMessageType.inboxUnread;
 
-    constructor() { 
+    constructor() {
         super();
-    }
-    
+     }
+
     //helper metod to build search params
     getSearchParams() : HttpParams {
         let params = super.getPaginationSearchParams();
-        params = params.append('userLikeType', zUserLikeType[this.userLikeType]);
+        params = params.append('messageType', zMessageType[this.messageType]);
         return params;
     }
 }

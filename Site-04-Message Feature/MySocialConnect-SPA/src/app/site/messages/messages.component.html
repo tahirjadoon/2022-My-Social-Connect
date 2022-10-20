@@ -1,1 +1,74 @@
-<p>messages works!</p>
+<!--btns to pull information-->
+<div class="row my-4">
+    <div class="btn-group" name="messageType">
+        <button class="btn btn-primary btn-small me-1"
+            [ngClass]="{'btn-success': msgTypeString == zMessageType[zMessageType.inboxUnread] }"
+            [(ngModel)]="msgParams.messageType"
+            btnRadio="{{ zMessageType.inboxUnread }}"
+            (click)="loadMessages()">
+            <i class="fa fa-envelope"></i> Unread
+        </button>
+        <button class="btn btn-primary btn-small me-1"
+            [ngClass]="{'btn-success': msgTypeString == zMessageType[zMessageType.inbox] }"
+            [(ngModel)]="msgParams.messageType"
+            btnRadio="{{ zMessageType.inbox }}"
+            (click)="loadMessages()">
+            <i class="fa fa-envelope-open"></i> Inbox
+        </button>
+        <button class="btn btn-primary btn-small me-1"
+            [ngClass]="{'btn-success': msgTypeString == zMessageType[zMessageType.outbox] }"
+            [(ngModel)]="msgParams.messageType"
+            btnRadio="{{ zMessageType.outbox }}"
+            (click)="loadMessages()">
+            <i class="fa fa-regular fa-paper-plane"></i> Outbox
+        </button>
+    </div>
+</div>
+
+<!--when no messages are found then displaying conditional messages-->
+<div class="row" *ngIf="!isGettingMessage && messages?.length === 0" [ngSwitch]="msgTypeString">
+    <div *ngSwitchCase="zMessageType[zMessageType.inbox]">Inbox no messages</div>
+    <div *ngSwitchCase="zMessageType[zMessageType.inboxUnread]">No unread messages</div>
+    <div *ngSwitchDefault>Nothing in outbox</div>
+</div>
+
+<!--displaying messages-->
+<div class="row" *ngIf="messages!.length > 0">
+    <table class="table" style="cursor: pointer">
+        <tr>
+            <th style="width: 40%">Message</th>
+            <th style="width: 20%">From / To</th>
+            <th style="width: 20%">Sent / Received</th>
+            <th style="width: 20%"></th>
+        </tr>
+        <tr [hidden]="isGettingMessage" *ngFor="let message of messages" routerLink='{{ memberDetailLink(message) }}' [queryParams]="{tab: 3}">
+            <td>{{message.messageContent}}</td>
+            <td>
+                <div>
+                    <img class="img-circle rounded-circle me-2" src="{{ memberPhotoUrl(message)  || './assets/user.png' }}" alt="{{ memberUserName(message) }}">
+                    <strong>{{ memberUserName(message) | titlecase }}</strong>
+                </div>
+            </td>
+            <td>{{ message.dateMessageSent | timeago }}</td>
+            <td>
+                <!--there is link on the row. add second link to stop propagation -->
+                <button type="button" class="btn btn-danger btn-sm" (click)="$event.stopPropagation()" (click)="onDeleteMessage(message.id)">Delete</button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!--pagination-->
+<div class="d-flex justify-content-center" *ngIf="pagination && !isGettingMessage && messages!.length > 0">
+    <pagination
+            [boundaryLinks]="true"
+            [totalItems]="pagination.totalItems"
+            [itemsPerPage]="pagination.itemsPerPage"
+            [(ngModel)]="pagination.currentPage"
+            (pageChanged)="onPageChanged($event)"
+            previousText="&lsaquo;"
+            nextText="&rsaquo;"
+            firstText="&laquo;"
+            lastText="&raquo;">
+    </pagination>
+</div>

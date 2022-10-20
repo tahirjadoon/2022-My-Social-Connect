@@ -14,6 +14,8 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { ServerErrorComponent } from './site/errors/server-error/server-error.component';
 import { PreventUnsavedChangesGuard } from './core/guards/prevent-unsaved-changes.guard';
 
+import { MemberDetailResolver } from './core/resolvers/member-detail.resolver';
+
 //add the components here
 //first empty one is the default route
 //** is the default route, it can be any component
@@ -26,7 +28,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: 'members/list', component: MemberListComponent },
-      { path: 'members/detail/:guid/:name', component: MemberDetailComponent },
+      //member detail is using resolver. member is key and MemberDetailResolver  is the value
+      { path: 'members/detail/:guid/:name', component: MemberDetailComponent, resolve: { member: MemberDetailResolver } },
       { path: 'members/edit', component: MemberEditComponent, canDeactivate: [PreventUnsavedChangesGuard] },
       { path: 'lists', component: ListsComponent },
       { path: 'messages', component: MessagesComponent },

@@ -8,7 +8,7 @@ export class ApiUrlService {
   private rId = "{id}";
 
 
-  //get the api base url from the environment. This url ends with a / 
+  //get the api base url from the environment. This url ends with a /
   private baseUrl: string = environment.usebaseUrlHttps ? environment.webApiBaseUrlHttps : environment.webApiBaseUrlHttp;
 
   //add api key word to the base url and also add ending / to it
@@ -18,9 +18,9 @@ export class ApiUrlService {
 
     if (environment.displayConsoleLog) {
       console.log(`ApiUrlService baseUrl: ${this.baseUrl}`);
-      console.log(`ApiUrlService apiBaseUrl: ${this.apiBaseUrl}`);  
+      console.log(`ApiUrlService apiBaseUrl: ${this.apiBaseUrl}`);
     }
-    
+
   }
 
   //accounts controller urls
@@ -50,7 +50,7 @@ export class ApiUrlService {
   userAddPhoto = `${this.usersBaseUrl}add/photo`;
   userSetPhotoMain = `${this.usersBaseUrl}set/photo/${this.userPhotoIdReplace}/main`;//replace [photoId] with the photoId
   userDeletePhoto = `${this.usersBaseUrl}delete/${this.userPhotoIdReplace}/photo`;//replace [photoId] with the photoId
-  
+
   //like constroller urls
   private likesBaseUrl = `${this.apiBaseUrl}likes/`;
   likeUserIdReplace = "[id]";
@@ -58,4 +58,12 @@ export class ApiUrlService {
   likesForUser = `${this.likesBaseUrl}user/likes`;
   likeAdd = `${this.likesBaseUrl}${this.likeUserIdReplace}/like/${this.likeUserNameReplace}`; //replace [id] with userid and [name] with logged in user name
 
+  //message controller urls
+  private messagesBaseUrl = `${this.apiBaseUrl}messages/`;
+  messageRecipIdReplace = "[recpid]";
+  messageDelIdReplace = "[msgid]";
+  messageSend = `${this.messagesBaseUrl}send/message`;
+  messagesGet = `${this.messagesBaseUrl}user/get/messages`;
+  messageThread = `${this.messagesBaseUrl}message/thread/${this.messageRecipIdReplace}`; //replace [recpid] with receipent id
+  messageDelete = `${this.messagesBaseUrl}delete/message/${this.messageDelIdReplace}`; //replace [msgid] with the msg id to delete
 }

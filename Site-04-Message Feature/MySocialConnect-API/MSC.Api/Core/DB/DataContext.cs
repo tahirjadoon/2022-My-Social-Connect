@@ -15,11 +15,28 @@ namespace MSC.Api.Core.DB
         //UserLike will have a table name of Likes
         public DbSet<UserLike> Likes { get; set; }
 
+        //UserMessage will have a table name of Messages
+        public DbSet<Message> Messages { get; set; }
+
         //give entities some configuration
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
+            //dont foget to add migrations
+            //dotnet ef migrations add MessageEntityAdded -o Core/DB/Migrations 
+            //and then either issue command "dotnet ef database update"
+            //or do dontnet run. For this check program.cs "CUSTOM: Seed Data Start" section
+            CreateUserLike(builder);
+            CreateMessage(builder);
+        }
+
+        /// <summary>
+        /// Configure User Likes
+        /// </summary>
+        /// <param name="builder"></param>
+        private void CreateUserLike(ModelBuilder builder)
+        {
             //user like configuration
             //key is combination of sourceUserId and LikedUserId
             builder.Entity<UserLike>()
@@ -38,7 +55,28 @@ namespace MSC.Api.Core.DB
                     .HasForeignKey(s => s.LikedUserId)
                     .OnDelete(DeleteBehavior.Cascade) //when the user is deleted then delete the related entities. For sql server use DeleteBehavior.NoAction 
             ;
+        }
 
+        /// <summary>
+        /// Confiure User Messages
+        /// </summary>
+        /// <param name="builder"></param>
+        private void CreateMessage(ModelBuilder builder)
+        {
+            //user message configuration
+            //receiver
+            builder.Entity<Message>()
+                    .HasOne(r => r.Receipient)
+                    .WithMany(m => m.MessagesReceived)
+                    .OnDelete(DeleteBehavior.Restrict) //both the parties need to delete the message to be removed from the database
+            ;
+
+            //sender
+            builder.Entity<Message>()
+                    .HasOne(s => s.Sender)
+                    .WithMany(m => m.MessagesSent)
+                    .OnDelete(DeleteBehavior.Restrict)
+            ;
         }
     }
 }

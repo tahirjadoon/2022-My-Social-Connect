@@ -25,6 +25,7 @@ import { MemberCardComponent } from '../../site/members/member-card/member-card.
 import { MemberEditComponent } from '../../site/members/member-edit/member-edit.component';
 import { PhotoEditorComponent } from '../../site/members/photo-editor/photo-editor.component';
 import { DisplayFormgroupErrorsComponent } from '../../site/errors/display-formgroup-errors/display-formgroup-errors.component';
+import { MemberMessagesComponent } from '../../site/members/member-messages/member-messages.component';
 
 import { TextInputComponent } from '../../site/form-controls/text-input/text-input.component';
 
@@ -46,6 +47,7 @@ import { DateInputComponent } from '../../site/form-controls/date-input/date-inp
     MemberCardComponent,
     MemberEditComponent,
     PhotoEditorComponent,
+    MemberMessagesComponent,
     DisplayFormgroupErrorsComponent,
     TextInputComponent,
     DateInputComponent,

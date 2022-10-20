@@ -38,4 +38,7 @@ public class AppUser
     /// The users that the logged in user liked. CheckDB Context for relationships
     /// </summary>
     public ICollection<UserLike> UsersILiked { get; set; }
+
+    public ICollection<Message> MessagesSent { get; set; }
+    public ICollection<Message> MessagesReceived { get; set; }
 }
