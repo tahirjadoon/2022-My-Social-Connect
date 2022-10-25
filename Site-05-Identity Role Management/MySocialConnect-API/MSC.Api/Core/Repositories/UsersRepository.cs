@@ -26,27 +26,8 @@ public class UsersRepository : IUsersRepository
         _mapper = mapper;
     }
 
-    //return PageList<userDto> rather than list of userDto
-    /*
-    public async Task<IEnumerable<UserDto>> GetUsersAsync()
-    {
-        //var users = await _context.Users.ToListAsync();
-        //add photos as eager loading
-        //var users = await _context.Users.Include(p => p.Photos).ToListAsync();
-        //return users;
-
-        //using automapper queryable extensions
-        var users = await _context.Users
-                            .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
-                            .AsSplitQuery()
-                            .AsNoTracking()
-                            .ToListAsync();
-        return users;
-    }
-    */
     public async Task<PageList<UserDto>> GetUsersAsync(UserParams userParams)
     {
-        //check above for initial implementation
         //query is IQueryable
         var query = _context.Users.AsQueryable();
 

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -10,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using MSC.Api.Core.BusinessLogic;
 using MSC.Api.Core.Dto;
 using MSC.Api.Core.Dto.Helpers;
-using MSC.Api.Core.Entities;
 using MSC.Api.Core.Extensions;
 
 namespace MSC.Api.Controllers;
@@ -25,20 +23,6 @@ public class UsersController : BaseApiController
         _usersBl = userBl;
     }
 
-    //due to pagination check the new implementation
-    /*
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
-    {
-        var users = await _usersBl.GetUsersAsync();
-        if (users == null || !users.Any())
-        {
-            return NotFound("No users found!");
-        }
-
-        return Ok(users);
-    }
-    */
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers([FromQuery] UserParams userParams)
     {

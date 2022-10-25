@@ -1,16 +1,22 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MSC.Api.Core.Entities;
 
 namespace MSC.Api.Core.DB
 {
-    public class DataContext : DbContext
+    //Removed use of DataContext : DbContext
+    public class DataContext : IdentityDbContext<AppUser, AppRole, int,
+                                                IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>,
+                                                IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public DataContext(DbContextOptions options) : base(options)
         {
         }
 
-        //AppUser will have a table name of Users
-        public DbSet<AppUser> Users { get; set; }
+
+        //no need to DbSet Users any more with Identity
+        //public DbSet<AppUser> Users { get; set; }
 
         //UserLike will have a table name of Likes
         public DbSet<UserLike> Likes { get; set; }
@@ -27,8 +33,33 @@ namespace MSC.Api.Core.DB
             //dotnet ef migrations add MessageEntityAdded -o Core/DB/Migrations 
             //and then either issue command "dotnet ef database update"
             //or do dontnet run. For this check program.cs "CUSTOM: Seed Data Start" section
+
+            //Due to use of Identity
+            CreateUserRole(builder);
+
             CreateUserLike(builder);
             CreateMessage(builder);
+        }
+
+        /// <summary>
+        /// User roles due to use of Identity
+        /// </summary>
+        /// <param name="builder"></param>
+        private void CreateUserRole(ModelBuilder builder)
+        {
+            builder.Entity<AppUser>()
+                    .HasMany(ur => ur.UserRoles)
+                    .WithOne(u => u.User)
+                    .HasForeignKey(ur => ur.UserId)
+                    .IsRequired()
+            ;
+
+            builder.Entity<AppRole>()
+                    .HasMany(ur => ur.UserRoles)
+                    .WithOne(u => u.Role)
+                    .HasForeignKey(ur => ur.RoleId)
+                    .IsRequired()
+            ;
         }
 
         /// <summary>

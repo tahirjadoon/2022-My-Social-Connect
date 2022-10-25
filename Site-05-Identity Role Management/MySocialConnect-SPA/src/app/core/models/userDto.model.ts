@@ -5,5 +5,7 @@ export class userDto {
                 public displayName: string, public gender: string, public introduction: string,
                 public lookingFor: string, public interests: string, public city: string, public country: string,
                 public photos: PhotoDto[],
-                public lastActive: Date, public createdOn: Date, public updatedOn: Date) { }
+                public lastActive: Date, public createdOn: Date, public updatedOn: Date,
+                public roles: string[] = []
+    ) { }
 }

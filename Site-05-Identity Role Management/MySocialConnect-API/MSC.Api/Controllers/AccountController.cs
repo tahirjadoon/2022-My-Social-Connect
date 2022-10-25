@@ -1,10 +1,7 @@
-using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MSC.Api.Core.BusinessLogic;
 using MSC.Api.Core.Dto;
-using MSC.Api.Core.Entities;
 
 namespace MSC.Api.Controllers;
 public class AccountController : BaseApiController
@@ -15,19 +12,6 @@ public class AccountController : BaseApiController
     {
         _userBl = userBl;
     }
-
-    /*
-    [HttpPost("register")]
-    public async Task<ActionResult<AppUser>> Register([FromQuery] string userName, [FromBody] string password)
-    {
-        var user = await _userBl.Register(userName, password);
-
-        if(user == null || user.Id <= 0)
-            return BadRequest("Unable to create registration");
-
-        return Ok(user);
-    }
-    */
 
     /// <summary>
     /// Register users. Required attribute applied to the dto properties

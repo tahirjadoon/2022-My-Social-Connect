@@ -13,8 +13,10 @@ import { MemberEditComponent } from './site/members/member-edit/member-edit.comp
 import { AuthGuard } from './core/guards/auth.guard';
 import { ServerErrorComponent } from './site/errors/server-error/server-error.component';
 import { PreventUnsavedChangesGuard } from './core/guards/prevent-unsaved-changes.guard';
+import { AdminPanelComponent } from './site/admin/admin-panel/admin-panel.component';
 
 import { MemberDetailResolver } from './core/resolvers/member-detail.resolver';
+import { AdminGuard } from './core/guards/admin.guard';
 
 //add the components here
 //first empty one is the default route
@@ -33,6 +35,7 @@ const routes: Routes = [
       { path: 'members/edit', component: MemberEditComponent, canDeactivate: [PreventUnsavedChangesGuard] },
       { path: 'lists', component: ListsComponent },
       { path: 'messages', component: MessagesComponent },
+      { path: 'admin', component: AdminPanelComponent, canActivate: [AdminGuard] },
     ]
   },
   { path: 'test-errors', component: TestErrorsComponent },

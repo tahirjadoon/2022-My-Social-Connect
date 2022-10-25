@@ -4,7 +4,6 @@ import { environment } from '../environments/environment';
 
 import { AccountService } from './core/services/account.service';
 
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -71,7 +70,7 @@ export class AppComponent implements OnInit {
     });
   }
   */
-  
+
   //on website load get the user and fire it. The subscribers then will pick it, nav bar component in this case
   setCurrentUser() {
     this.accountService.getAndFireCurrentUser();

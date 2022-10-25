@@ -16,7 +16,7 @@ import { SiteRegisterDto } from '../models/siteRegisterDto.model';
 })
 export class AccountService {
 
-  //create an observable to store the user in 
+  //create an observable to store the user in
   //replaySubject is a special type of observable.
   //replaySubject is kind of buffer object, it will store the values and any time a subscriber subscribes to it, it will emit the last value inside it
   private currentUserSource = new ReplaySubject<UserTokenDto>(1);
@@ -49,6 +49,12 @@ export class AccountService {
   }
 
   setAndFireCurrentUser(user: UserTokenDto) {
+    //decode token and add roles to the user. Keep in mind some users may only have single role so that is not a string[]
+    user.roles = [];
+    const roles = this.getDecodedToken(user.token)?.role;
+    if (roles) {
+      Array.isArray(roles) ? user.roles = roles : user.roles.push(roles);
+    }
     //store the user in local storage
     this.localStorageService.setItem(this.localStorageService._keyUser, user);
     this.fireCurrentUser(user);
@@ -70,7 +76,7 @@ export class AccountService {
 
     if(environment.displayConsoleLog)
       console.log(`AccountService RegisterUrl: ${url}`);
-    
+
     return this.httpClientService
       .post<UserTokenDto>(url, registerDto)
       .pipe(
@@ -80,5 +86,16 @@ export class AccountService {
           return user;
         })
       );
+  }
+
+  getDecodedToken(token: any) :any {
+    //token is not encypted, the signature is.
+    //get the user roles from the token
+    //The atob() method decodes a string that has been encoded by the btoa() method
+    //token comes in three parts seperated by the . It is Header, Payload and signature
+    //interested in the middle part
+    var parsedToken = token.split(".")[1];
+    var decoded = JSON.parse(atob(parsedToken));
+    return decoded;
   }
 }

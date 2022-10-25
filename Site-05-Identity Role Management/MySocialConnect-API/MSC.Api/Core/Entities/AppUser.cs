@@ -1,21 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace MSC.Api.Core.Entities;
 
+//IR_REFACOR: derive from IdentityUser and make the key type int
 [Index(nameof(GuId))]
 [Index(nameof(UserName))]
-public class AppUser
+public class AppUser : IdentityUser<int>
 {
-    public int Id { get; set; }
-
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid GuId { get; set; }
-    public string UserName { get; set; }
-    public byte[] PasswordHash { get; set; }
-    public byte[] PasswordSalt { get; set; }
     public DateTime DateOfBirth { get; set; }
     public string DisplayName { get; set; }
     public string Gender { get; set; }
@@ -41,4 +38,9 @@ public class AppUser
 
     public ICollection<Message> MessagesSent { get; set; }
     public ICollection<Message> MessagesReceived { get; set; }
+
+    /// <summary>
+    /// Added due to identity, acting as a join table
+    /// </summary>
+    public ICollection<AppUserRole> UserRoles { get; set; }
 }

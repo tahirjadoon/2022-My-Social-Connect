@@ -4,5 +4,7 @@ export class UserTokenDto {
         public token: string = "",
         public mainPhotoUrl = "",
         public displayName = "",
-        public gender = "") { }
+        public gender = "",
+        public roles: string[]
+        ) { }
 }

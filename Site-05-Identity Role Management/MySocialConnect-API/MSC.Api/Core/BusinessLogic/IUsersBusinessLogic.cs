@@ -32,4 +32,19 @@ public interface IUsersBusinessLogic
     Task<PhotoDto> AddPhoto(IFormFile file, UserClaimGetDto claims);
     Task<bool> SetPhotoMain(int photoId, UserClaimGetDto claims);
     Task<BusinessResponse> DeletePhoto(int photoId, UserClaimGetDto claims);
+
+    /// <summary>
+    /// Get the users with their roles
+    /// </summary>
+    /// <returns>return an annonamous object</returns>
+    Task<IEnumerable<object>> GetUSersWithRoles();
+
+    /// <summary>
+    /// Edit the user roles, this will remove and add the roles
+    /// </summary>
+    /// <param name="adminUSerId"></param>
+    /// <param name="userToUpdate"></param>
+    /// <param name="roles"></param>
+    /// <returns></returns>
+    Task<BusinessResponse> EditRolesForUser(int adminUSerId, Guid userToUpdate, IEnumerable<string> roles);
 }

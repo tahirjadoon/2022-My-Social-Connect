@@ -7,13 +7,13 @@ import { UserTokenDto } from '../models/userTokenDto.model';
   providedIn: 'root'
 })
 export class LocalStorageService {
-  
+
   //setup the keys for different items
   public _keyUser: string = "MySocialConnectUser";
 
   constructor() { }
 
-  
+
   getStorage():any[] {
     let s = [];
     for (let i = 0; i < localStorage.length; i++){
@@ -29,7 +29,7 @@ export class LocalStorageService {
   getItem(key: string) {
     return JSON.parse(localStorage.getItem(key)!);
   }
-  
+
   setItem(key: string, data: any) {
     localStorage.setItem(key, JSON.stringify(data));
   }
@@ -44,4 +44,5 @@ export class LocalStorageService {
   getloggedinUserName: string = this.getLoggedInUser?.userName;
   getLoggedinUserGuid: string = this.getLoggedInUser?.guId;
   getLoggedinUserGender: string = this.getLoggedInUser?.gender;
+  getLoggedinUserRoles: string[] = this.getLoggedInUser?.roles;
 }

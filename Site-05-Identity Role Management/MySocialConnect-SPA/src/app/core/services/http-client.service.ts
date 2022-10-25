@@ -17,7 +17,7 @@ export class HttpClientService {
 
   /**
    * A GET method
-   * @param url api url 
+   * @param url api url
    * @param params pass empty meaning do not pass when not used, will cover stuff like ?x=1&y=2,
    *        instead use HttpParams  pass as { params: { sessionTimeOut: 'y' } } or
    *          const params = new HttpParams().set('id', 1).set('name','tahir');
@@ -35,29 +35,29 @@ export class HttpClientService {
 
     /**
    * A GET method
-   * @param url api url 
+   * @param url api url
    * @param params pass empty meaning do not pass when not used, will cover stuff like ?x=1&y=2,
-   *        instead use HttpParams  
+   *        instead use HttpParams
    *        let params = new HttpParams();
    *        params = params.append('pageNumber', page.toString());
    *        params = params.append('pageSize', itemsPerPage.toString());
    * @returns rreturns the full HttpResponse
    */
-  getWithFullResponse<TReturn>(ul: string, params = {}) : Observable<HttpResponse<TReturn>> {
+  getWithFullResponse<TReturn>(url: string, params = {}) : Observable<HttpResponse<TReturn>> {
     return this.httpClient
-      .get<TReturn>(ul, { observe: 'response', params })
+      .get<TReturn>(url, { observe: 'response', params })
       .pipe(retry(this.retries));
   }
 
   /**
    * A POST method
-   * @param url api url 
+   * @param url api url
    * @param body model posting
    * @param params pass empty meaning do not pass when not used, will cover stuff like ?x=1&y=2,
    *        let params = {};
    *        params['params'] = new HttpParams().set('groupType', this.groupType.toString());
    *        params['observe'] = 'body';
-   * @returns returns TReturn string/number/model 
+   * @returns returns TReturn string/number/model
    */
   post<TReturn>(url: string, body: any, params = {}): Observable<TReturn> {
     //console.log(url);

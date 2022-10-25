@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { NgxSpinnerModule } from 'ngx-spinner';
@@ -27,13 +28,20 @@ import { PhotoEditorComponent } from '../../site/members/photo-editor/photo-edit
 import { DisplayFormgroupErrorsComponent } from '../../site/errors/display-formgroup-errors/display-formgroup-errors.component';
 import { MemberMessagesComponent } from '../../site/members/member-messages/member-messages.component';
 
+import { AdminPanelComponent } from '../../site/admin/admin-panel/admin-panel.component';
+import { UserManagementComponent } from '../../site/admin/user-management/user-management.component';
+import { PhotoManagementComponent } from '../../site/admin/photo-management/photo-management.component';
+
+import { RolesModalComponent } from '../../site/modals/roles-modal/roles-modal.component';
+
 import { TextInputComponent } from '../../site/form-controls/text-input/text-input.component';
-
-import { AppRoutingModule } from '../../app-routing.module';
-
-import { ValidatorsTransformPipe } from '../pipes/validators-transform.pipe';
 import { DateInputComponent } from '../../site/form-controls/date-input/date-input.component';
 
+import { ValidatorsTransformPipe } from '../pipes/validators-transform.pipe';
+
+import { HasRoleDirective } from '../directives/has-role.directive';
+
+import { AppRoutingModule } from '../../app-routing.module';
 
 //what ever is imported here, the same should be exported as well
 @NgModule({
@@ -48,13 +56,18 @@ import { DateInputComponent } from '../../site/form-controls/date-input/date-inp
     MemberEditComponent,
     PhotoEditorComponent,
     MemberMessagesComponent,
+    AdminPanelComponent,
+    UserManagementComponent,
+    PhotoManagementComponent,
     DisplayFormgroupErrorsComponent,
     TextInputComponent,
     DateInputComponent,
+    RolesModalComponent,
     ValidatorsTransformPipe,
+    HasRoleDirective,
   ],
   imports: [
-    CommonModule, 
+    CommonModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
@@ -64,17 +77,18 @@ import { DateInputComponent } from '../../site/form-controls/date-input/date-inp
     BsDatepickerModule.forRoot(),
     ToastrModule.forRoot({ positionClass: 'toast-bottom-right' }),
     TabsModule.forRoot(),
-    NgxGalleryModule, 
+    NgxGalleryModule,
     NgxSpinnerModule,
     PaginationModule.forRoot(),
     ButtonsModule.forRoot(),
+    ModalModule.forRoot(),
     FileUploadModule,
     TimeagoModule.forRoot(),
   ],
   exports: [
     AppRoutingModule,
     BrowserAnimationsModule,
-    HttpClientModule, 
+    HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     BsDropdownModule,
@@ -85,8 +99,10 @@ import { DateInputComponent } from '../../site/form-controls/date-input/date-inp
     NgxSpinnerModule,
     PaginationModule,
     ButtonsModule,
+    ModalModule,
     FileUploadModule,
     TimeagoModule,
+    HasRoleDirective,
   ]
 })
 export class SharedModule { }

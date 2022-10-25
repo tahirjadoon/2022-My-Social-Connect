@@ -10,6 +10,7 @@ import { LoginDto } from '../../core/models/loginDto.model';
 import { UserTokenDto } from '../../core/models/userTokenDto.model';
 
 import { environment } from '../../../environments/environment';
+import { zRoles } from 'src/app/core/enums/zRoles';
 
 
 @Component({
@@ -24,18 +25,21 @@ export class NavComponent implements OnInit, OnDestroy {
 
   //note use of ! or will see a compiler error
   @ViewChild('navbarCollapse') navbarCollapseElement!: ElementRef;
-  
-  loginInfo: LoginDto = <LoginDto>{}; 
+
+  loginInfo: LoginDto = <LoginDto>{};
   userInfo: UserTokenDto = <UserTokenDto>{};
 
   error: string = "";
   isLoggedIn: boolean = false;
   private isExecutingLogin: boolean = false;
-  
+
   //note use of ! or will see a compiler error
   loginSubscription!: Subscription;
   loginAlternateSubscription!: Subscription;
   currentUserSubscription!: Subscription;
+
+  //to be used for the appHasRole directive with Admin link
+  zRoles = zRoles;
 
   constructor(private accountService: AccountService, private errorMsgService: ErrorMessageService,
     private el: ElementRef, private renderer: Renderer2,
@@ -56,7 +60,7 @@ export class NavComponent implements OnInit, OnDestroy {
   onLogin() {
     this.isExecutingLogin = true;
     if(environment.displayConsoleLog) console.log(this.loginInfo);
-    
+
     this.loginSubscription = this.accountService.login(this.loginInfo).subscribe({
       next: r => {
         this.setUser(r, "onLogin");
@@ -74,8 +78,8 @@ export class NavComponent implements OnInit, OnDestroy {
         this.isExecutingLogin = false;
       }
     });
-    
-    
+
+
     //alternate way
     /*
     this.loginAlternateSubscription = this.accountService.login(this.loginInfo).subscribe(response => {
@@ -93,27 +97,27 @@ export class NavComponent implements OnInit, OnDestroy {
 
     //hide navbar in mobile mode
     this.onNavBarItemClickCloseNavBar();
-    
-    //flag 
+
+    //flag
     this.isLoggedIn = false;
     //redirect the home page
     this.router.navigateByUrl('/');
   }
 
-  //hide the navbar in mobile mode after an action has been performed 
+  //hide the navbar in mobile mode after an action has been performed
   onNavBarItemClickCloseNavBar() {
     //this.el.nativeElement.querySelector('.navbar-ex1-collapse')  get the DOM
     //this.renderer.setElementClass('DOM-Element', 'css-class-you-want-to-add', false) if 3rd value is true
     //it will add the css class. 'in' class is responsible for showing the menu.
     //this.renderer.setElementClass(this.el.nativeElement.querySelector('.navbar-ex1-collapse'), 'in', false);
-    
+
     //renderer2 method
     /*
     var navBarCollapseTargetItem = this.el.nativeElement.querySelector('#navbarCollapse');
     if (environment.displayConsoleLog) console.log(navBarCollapseTargetItem);
     this.renderer.removeClass(navBarCollapseTargetItem, 'show');
     */
-    
+
     //view child method
     const classToRemove = "show";
     if (this.navbarCollapseElement && this.navbarCollapseElement.nativeElement.classList.contains(classToRemove))

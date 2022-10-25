@@ -66,4 +66,10 @@ export class ApiUrlService {
   messagesGet = `${this.messagesBaseUrl}user/get/messages`;
   messageThread = `${this.messagesBaseUrl}message/thread/${this.messageRecipIdReplace}`; //replace [recpid] with receipent id
   messageDelete = `${this.messagesBaseUrl}delete/message/${this.messageDelIdReplace}`; //replace [msgid] with the msg id to delete
+
+  //admin controller urls
+  private adminBaseUrl = `${this.apiBaseUrl}admin/`;
+  adminRolesGuidReplace = "[guid]";
+  adminUsersWithroles = `${this.adminBaseUrl}users-with-roles`;
+  adminEditRoles = `${this.adminBaseUrl}edit-roles/${this.adminRolesGuidReplace}`; //replace [guid] with user guids and pass in the new roles as params
 }

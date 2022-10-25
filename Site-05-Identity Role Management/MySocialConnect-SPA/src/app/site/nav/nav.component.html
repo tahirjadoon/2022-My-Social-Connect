@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    
+
     <div class="container">
         <!--<div class="container-fluid">-->
             <a class="navbar-brand" routerLink="/"><span class="title">{{title}}</span></a>
@@ -20,14 +20,17 @@
                         <li class="nav-item">
                             <a class="nav-link" routerLink="/messages" routerLinkActive="active" (click)="onNavBarItemClickCloseNavBar()">Messages</a>
                         </li>
+                        <li *appHasRole="[zRoles.Admin,zRoles.Moderator]" class="nav-item">
+                          <a class="nav-link" routerLink="/admin" routerLinkActive="active" (click)="onNavBarItemClickCloseNavBar()">Admin</a>
+                        </li>
                     </ng-container>
                     <li class="nav-item">
                         <a class="nav-link" routerLink="/test-errors" routerLinkActive="active" (click)="onNavBarItemClickCloseNavBar()">Test Errors</a>
                     </li>
                 </ul>
 
-                <!--only show in logged in mode, 
-                    apply directives dropdown, dropdownToggle 
+                <!--only show in logged in mode,
+                    apply directives dropdown, dropdownToggle
                             and structural directive *dropdownMenu-->
                 <div *ngIf="isLoggedIn" class="btn-group" dropdown>
                     <button type="button" class="btn btn-info">
@@ -53,5 +56,5 @@
             </div>
         <!--</div>-->
     </div>
-    
+
   </nav>

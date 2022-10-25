@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using MSC.Api.Core.Dto;
 
@@ -54,6 +56,16 @@ public static class ClaimsPrincipalExtensions
         return getGuid;
     }
 
+    public static List<string> GetRoles(this ClaimsPrincipal principal)
+    {
+        if (principal == null) return null;
+        var roleClaims = principal.FindAll(ClaimTypes.Role)?.ToList();
+        if (roleClaims == null || !roleClaims.Any()) return null;
+
+        var roles = roleClaims.Select(x => x.Value).ToList();
+        return roles;
+    }
+
     public static UserClaimGetDto GetUserClaims(this ClaimsPrincipal principal)
     {
         if (principal == null) return null;
@@ -62,7 +74,8 @@ public static class ClaimsPrincipalExtensions
             UserId = principal.GetUserId(),
             UserName = principal.GetUserName(),
             Guid = principal.GetUserGuid(),
-            DisplayName = principal.GetDisplayName()
+            DisplayName = principal.GetDisplayName(),
+            Roles = principal.GetRoles()
         };
         return claimsDto;
     }

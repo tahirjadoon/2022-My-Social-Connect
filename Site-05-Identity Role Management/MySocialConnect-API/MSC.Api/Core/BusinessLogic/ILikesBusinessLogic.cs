@@ -1,8 +1,8 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MSC.Api.Core.Dto;
 using MSC.Api.Core.Dto.Helpers;
 using MSC.Api.Core.Entities;
-using MSC.Api.Core.Enums;
 
 namespace MSC.Api.Core.BusinessLogic;
 public interface ILikesBusinessLogic
