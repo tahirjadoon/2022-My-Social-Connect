@@ -1,0 +1,10 @@
+export class UserTokenDto {
+    constructor(public userName: string = "",
+        public guId: string = "",
+        public token: string = "",
+        public mainPhotoUrl = "",
+        public displayName = "",
+        public gender = "",
+        public roles: string[]
+        ) { }
+}
