@@ -1,4 +1,5 @@
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -37,6 +38,7 @@ public static class IdentityServiceExtensions
         ;
 
         var tokenKey = Encoding.UTF8.GetBytes(config.GetTokenKey());
+
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -46,6 +48,24 @@ public static class IdentityServiceExtensions
                         IssuerSigningKey = new SymmetricSecurityKey(tokenKey),
                         ValidateIssuer = false,
                         ValidateAudience = false
+                    };
+
+                    //signalR or websockets cannot send authentication header. Have to use query string with SignalR
+                    //signalR, this allows the client to send the token as query string
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            //get access_token from the query
+                            var accessToken = context.Request.Query["access_token"];
+                            //check the path of the request and only do for signalr. Our paths starts with hubs/ check programs.cs for details 
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrWhiteSpace(accessToken) && path.StartsWithSegments("/hubs"))
+                            {
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        }
                     };
                 });
 

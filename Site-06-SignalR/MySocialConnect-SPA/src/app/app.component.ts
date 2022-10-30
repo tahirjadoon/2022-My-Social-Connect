@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 import { environment } from '../environments/environment';
+import { UserTokenDto } from './core/models/userTokenDto.model';
 
 import { AccountService } from './core/services/account.service';
+import { LocalStorageService } from './core/services/local-storage.service';
+import { PresenceHubService } from './core/services/signalr/presence-hub.service';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +29,7 @@ export class AppComponent implements OnInit {
 
   constructor(private http: HttpClient){}
   */
-  constructor(private accountService: AccountService){}
+  constructor(private accountService: AccountService) { }
 
   ngOnInit() {
     this.title = environment.title;

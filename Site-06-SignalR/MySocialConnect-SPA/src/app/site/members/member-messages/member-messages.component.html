@@ -32,7 +32,7 @@
 
     <!--send message start -->
     <div class="card-footer">
-        <form #messageForm="ngForm" (ngSubmit)="onSendMessage()" autocomplete="off">
+        <form #messageForm="ngForm" (ngSubmit)="onSendMessageUsingHub()" autocomplete="off">
             <div class="input-group">
 
                 <input type="text" name="messageContent" required class="form-control" placeholder="Send a private message" [(ngModel)]="messageContent">

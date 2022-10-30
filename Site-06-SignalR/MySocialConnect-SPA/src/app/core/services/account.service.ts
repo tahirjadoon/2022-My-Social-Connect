@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { HttpClientService } from './http-client.service';
 import { ApiUrlService } from './api-url.service';
 import { LocalStorageService } from './local-storage.service';
+import { PresenceHubService } from './signalr/presence-hub.service';
 
 import { LoginDto } from '../models/loginDto.model';
 import { UserTokenDto } from '../models/userTokenDto.model';
@@ -22,7 +23,10 @@ export class AccountService {
   private currentUserSource = new ReplaySubject<UserTokenDto>(1);
   currentUser$ = this.currentUserSource.asObservable();
 
-  constructor(private apiUrlService: ApiUrlService, private httpClientService: HttpClientService, private localStorageService: LocalStorageService) { }
+  constructor(private apiUrlService: ApiUrlService,
+    private httpClientService: HttpClientService,
+    private localStorageService: LocalStorageService,
+    private presenceService: PresenceHubService) { }
 
   //fire current user
   private fireCurrentUser(user: UserTokenDto) {
@@ -42,7 +46,11 @@ export class AccountService {
         map((respone: UserTokenDto) => {
           const user = respone;
           if(environment.displayConsoleLog) console.log(user);
-          if (user) this.setAndFireCurrentUser(user);
+          if (user) {
+            this.setAndFireCurrentUser(user);
+            //signalr presence - create hub connection to be notified
+            this.presenceService.createHubConnection(user);
+          }
           return user;
         })
       );
@@ -60,15 +68,21 @@ export class AccountService {
     this.fireCurrentUser(user);
   }
 
+  //this is being called from inside app.component.ts
   getAndFireCurrentUser() {
     const user: UserTokenDto = this.localStorageService.getItem(this.localStorageService._keyUser);
+    if (!user) return;
     this.fireCurrentUser(user);
+    //signalr presence - create hub connection to be notified
+    this.presenceService.createHubConnection(user);
   }
 
   logout() {
     //remove the user from local storage
     this.localStorageService.removeItem(this.localStorageService._keyUser);
     this.fireCurrentUser(null!);
+    //signalr presence - stop hub connection
+    this.presenceService.stopHubConnection();
   }
 
   register(registerDto: SiteRegisterDto) {
@@ -82,7 +96,11 @@ export class AccountService {
       .pipe(
         map((respone: UserTokenDto) => {
           const user = respone;
-          if (user) this.setAndFireCurrentUser(user);
+          if (user) {
+            this.setAndFireCurrentUser(user);
+            //signalr presence - create hub connection to be notified
+            this.presenceService.createHubConnection(user);
+          }
           return user;
         })
       );

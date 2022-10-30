@@ -12,6 +12,7 @@ using MSC.Api.Core.Dto.AutoMapper;
 using MSC.Api.Core.Constants;
 using MSC.Api.Core.Dto.Helpers;
 using MSC.Api.Core.ActionFilters;
+using MSC.Api.Core.SignalR;
 
 namespace MSC.Api.Core.Extensions;
 public static class ServiceExtensions
@@ -28,6 +29,10 @@ public static class ServiceExtensions
         //AddScoped: is for the life time of the request. Use this for the http requests
         //AddTransient: a new instance is provided to every request
         //AddSingleton: objects are the same for every object and every request
+
+        //add singleton items 
+        //SignalR add presenceTracker as a singleton
+        services.AddSingleton<PresenceTracker>();
 
         //adding the Cloudinary to read data from
         services.Configure<CloudinaryConfig>(config.GetSection(ConfigKeyConstants.CloudinarySettingsKey));
@@ -67,7 +72,10 @@ public static class ServiceExtensions
                                 {
                                     policy.WithOrigins(allowedSpecificOrigins.ToArray())
                                     .AllowAnyHeader()
-                                    .AllowAnyMethod();
+                                    .AllowAnyMethod()
+                                    //signalR
+                                    .AllowCredentials()
+                                    ;
                                 });
             });
         }

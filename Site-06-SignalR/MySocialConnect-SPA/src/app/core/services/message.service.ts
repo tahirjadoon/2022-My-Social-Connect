@@ -9,6 +9,10 @@ import { MessageParams } from '../models/helpers/message-params.model';
 import { environment } from '../../../environments/environment';
 import { MessageDto } from '../models/messageDto';
 
+//also look at signalr/message-hub.service for real time displaying messages between two users
+//kept the functionality seperate just to show signalr functionality at one place other wise this service is the best place
+//to use the signalr
+
 @Injectable({
   providedIn: 'root'
 })

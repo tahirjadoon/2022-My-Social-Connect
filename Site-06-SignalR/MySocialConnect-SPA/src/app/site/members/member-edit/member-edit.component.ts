@@ -19,9 +19,9 @@ export class MemberEditComponent implements OnInit {
   member: userDto = <userDto>{};
   user: UserTokenDto = <UserTokenDto>{};
 
-  memberUpdateSubscription!:Subscription;
+  memberUpdateSubscription!: Subscription;
 
-  //inside the angular user wil get propted when the user will move to another route without saving the changes. 
+  //inside the angular user wil get propted when the user will move to another route without saving the changes.
   //when the browser is closed or gone to another website then do the following
   @HostListener('window:beforeunload', ['$event']) unloadNotification($event: any) {
     if (this.editForm.dirty)
@@ -30,7 +30,9 @@ export class MemberEditComponent implements OnInit {
 
   memberSubscription!: Subscription;
 
-  constructor(private accountService: AccountService, private memberService: MembersService, private toastrService: ToastrService) {
+  constructor(private accountService: AccountService,
+              private memberService: MembersService,
+              private toastrService: ToastrService) {
     //subscribe to the logged in user. due to take(1) dont need to unsubscribe
     this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user);
   }

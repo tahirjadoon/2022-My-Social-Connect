@@ -6,14 +6,18 @@
             <li class="list-inline-item"><button class="btn btn-primary" routerLink='/members/detail/{{ member.guId }}/{{ member.userName }}'><i class="fa fa-light fa-user"></i></button></li>
             <li class="list-inline-item"><button class="btn btn-primary" (click)="onAddLike(member)"><i class="fa fa-light fa-thumbs-up"></i></button></li>
             <!--take the user to the members detail tab 3-->
-            <li class="list-inline-item"><button class="btn btn-primary" 
-                routerLink="/members/detail/{{member.guId}}/{{member.userName}}" 
+            <li class="list-inline-item"><button class="btn btn-primary"
+                routerLink="/members/detail/{{member.guId}}/{{member.userName}}"
                 [queryParams]="{tab: 3}"
                 routerLinkActive="router-link-active" ><i class="fa fa-light fa-envelope"></i></button></li>
         </ul>
     </div>
     <div class="card-body p-1">
-        <h6 class="card-title text-center mb-1"><i class="fa fa-user mr-2"></i>
+        <h6 class="card-title text-center mb-1">
+            <!--show users online/offline-->
+            <span [class.is-online]="isUserOnline">
+              <i class="fa fa-user mr-2"></i>
+            </span>
             {{ member.displayName }}, {{member.age}}
         </h6>
         <p class="card-text text-muted text-center">{{ member.city }}</p>

@@ -10,6 +10,7 @@ using MSC.Api.Core.DB;
 using MSC.Api.Core.Entities;
 using MSC.Api.Core.Extensions;
 using MSC.Api.Core.Middleware;
+using MSC.Api.Core.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,7 @@ builder.Services.RegisterRepos(configuration);
 builder.Services.RegisterDBContext(configuration);
 var myAllowSpecificOrigins = builder.Services.RegisterCors(configuration);
 builder.Services.AddIdentityServices(configuration);
+builder.Services.AddSignalR();
 //CUSTOM:End
 
 builder.Services.AddControllers();
@@ -79,6 +81,9 @@ app.UseHttpsRedirection();
 //ordering is important here. UseCors before UseAuthentication and UseAuthentication before UseAuthorization
 app.UseCors(myAllowSpecificOrigins);
 app.UseAuthentication();
+//tell routing about a hub end point and provide a route for accessing PresenceHub
+app.MapHub<PresenceHub>("hubs/presence");
+app.MapHub<MessageHub>("hubs/message");
 //CUSTOM: End
 
 app.UseAuthorization();

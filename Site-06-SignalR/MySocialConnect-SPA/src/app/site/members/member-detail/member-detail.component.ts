@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 
 import { ToastrService } from 'ngx-toastr';
 import {NgxGalleryOptions} from '@kolkov/ngx-gallery';
@@ -9,12 +9,17 @@ import {NgxGalleryAnimation} from '@kolkov/ngx-gallery';
 import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
 
 import { MembersService } from '../../../core/services/members.service';
-import { MessageService } from 'src/app/core/services/message.service';
+import { MessageService } from '../../../core/services/message.service';
+import { AccountService } from '../../../core/services/account.service';
+import { PresenceHubService } from '../../../core/services/signalr/presence-hub.service';
+import { MessageHubService } from '../../../core/services/signalr/message-hub.service';
 
 import { userDto } from '../../../core/models/userDto.model';
 import { MessageDto } from '../../../core/models/messageDto';
 
 import { environment } from '../../../../environments/environment';
+import { UserTokenDto } from 'src/app/core/models/userTokenDto.model';
+
 
 @Component({
   selector: 'app-member-detail',
@@ -26,7 +31,7 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
   //getting the reference to memberTabs
   //adding static since now we are using route resolver to get memebr data
   //also removed the check for members in the html
-  @ViewChild('memberTabs', {static: true}) memberTabs!: TabsetComponent; 
+  @ViewChild('memberTabs', {static: true}) memberTabs!: TabsetComponent;
   //each tab placed in the html
   activeTab!: TabDirective;
   //message subscription
@@ -46,16 +51,35 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
   membersSubscription!: Subscription;
   queryParamSubscription!: Subscription;
 
+  //signalr - presenceHub service - online users
+  isUserOnline: boolean = false;
+  onlineUsers: string[] = [];
+  onlineUsersSubscription!: Subscription;
+  //signalr - messageHub service - messages
+  messagesHubSubscription!: Subscription;
+
+  //logged in user
+  user: UserTokenDto = <UserTokenDto>{};
+
   constructor(private memberService: MembersService,
     private route: ActivatedRoute,
     private router: Router,
     private toastrService: ToastrService,
-    private messageService: MessageService) { }
+    private messageService: MessageService,
+    private presenceHubService: PresenceHubService,
+    private messageHubService: MessageHubService,
+    private accountService: AccountService) {
+    this.accountService.currentUser$.pipe(take(1)).subscribe({
+      next: (user: UserTokenDto) => {
+        this.user = user;
+      }
+    });
+  }
 
   ngOnInit(): void {
     //gallery optioins for the images
     this.setGalleryOptions();
-    
+
     //we have a route resolver so member is coming from there
     /*
     //there are two ways to get the id and name from the route
@@ -64,7 +88,7 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
     //this.route.snapshot.paramMap.get('id');
     //#2 way, preferred
     this.paramSubscription = this.route.params.subscribe(params => {
-      this.guid = params['guid']; 
+      this.guid = params['guid'];
       this.name = params['name'];
       if (environment.displayConsoleLog) {
         console.log(`Param guid: ${this.guid} name: ${this.name}`);
@@ -75,21 +99,21 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
       }
       //we have the id so get the data
       this.initData();
-    }); 
+    });
     */
     this.route.data.subscribe({
       next: data => {
         this.member = data['member'];
       }
     });
-    
+
     this.queryParamSubscription = this.route.queryParams.subscribe({
       next: params => {
         //tab is being passed in as query param
         let tab: number = +params['tab'];
         if (isNaN(tab) || tab > 3) tab = 0;
         this.selectTab(tab);
-      }, 
+      },
       error: e => { },
       complete: () => {}
     });
@@ -97,6 +121,8 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
     //moved it here from initData since route resolver is now being used to pcik the member
     //image gallery
     this.galleryImages = this.getImages();
+
+    this.getOnlineUsers();
   }
 
   ngOnDestroy(): void {
@@ -104,6 +130,11 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
     if (this.membersSubscription) this.membersSubscription.unsubscribe();
     if (this.messageSubscription) this.messageSubscription.unsubscribe();
     if (this.queryParamSubscription) this.queryParamSubscription.unsubscribe();
+    if (this.onlineUsersSubscription) this.onlineUsersSubscription.unsubscribe();
+    if (this.messagesHubSubscription) this.messagesHubSubscription.unsubscribe();
+
+    //when the user moves away from the component then stop the message connection
+    this.messageHubService.stopHubConnection();
   }
 
   //check https://www.npmjs.com/package/@kolkov/ngx-gallery
@@ -169,7 +200,14 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
     this.activeTab = data;
     //check that the active tab is messages and only load messages when the messages have not already been loaded
     if (this.activeTab.heading === 'Messages' && this.messages.length === 0) {
-      this.loadMessages();
+      //rather than loading the messages using message service now gettig the messages via MessageHub
+      //this.loadMessages();
+      //create the hub connection. note that we are not passing the messages from detail to messages any more
+      this.messageHubService.createHubConnection(this.user, this.member.userName, this.member.id);
+    }
+    else {
+      //when the user is not on the messages tab then disconnect from the hub as well
+      this.messageHubService.stopHubConnection();
     }
   }
 
@@ -177,5 +215,18 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
   selectTab(tabId: number) {
     this.memberTabs.tabs[tabId].active = true;
   }
+
+    //signalR - presence service
+    getOnlineUsers() {
+      this.isUserOnline = false;
+      this.onlineUsersSubscription = this.presenceHubService.onlineUsers$.subscribe({
+        next: (userNames: string[]) => {
+          this.onlineUsers = userNames;
+          if (userNames && userNames.length > 0) {
+            this.isUserOnline = userNames.includes(this.member.userName);
+          }
+        }
+      });
+    }
 
 }

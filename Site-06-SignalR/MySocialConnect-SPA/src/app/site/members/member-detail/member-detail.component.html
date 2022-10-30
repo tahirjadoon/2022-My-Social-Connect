@@ -1,6 +1,6 @@
 <!--
-    removed *ngIf="member" since now using route resolver and 
-    and need to select the messages tab if it has been passed in 
+    removed *ngIf="member" since now using route resolver and
+    and need to select the messages tab if it has been passed in
 -->
 <div class="row" >
     <!--left side quick info start-->
@@ -8,6 +8,9 @@
         <div class="card">
             <img src="{{ member.photoUrl || './assets/user.png' }}" alt="{{ member.displayName}}" class="card-img-top img-thumbnail">
             <div class="card-body">
+                <div class="my-2" *ngIf="isUserOnline">
+                  <i class="fa fa-user-circle text-success"></i> Online now
+                </div>
                 <div>
                     <strong>Location:</strong>
                     <p>{{ member.city }}, {{ member.country }}</p>
@@ -38,9 +41,9 @@
     <!--right side detail starts-->
     <div class="col-8">
         <!--
-        ngx-bootstrap tabs 
+        ngx-bootstrap tabs
         https://valor-software.com/ngx-bootstrap/#/components/tabs?tab=overview
-        styles for the member-tabset will go in the styles.css. 
+        styles for the member-tabset will go in the styles.css.
         These cannot be put in the local style sheet
         -->
         <tabset class="member-tabset" #memberTabs>

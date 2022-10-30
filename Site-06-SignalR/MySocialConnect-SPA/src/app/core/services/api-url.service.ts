@@ -5,21 +5,13 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class ApiUrlService {
-  private rId = "{id}";
 
-
-  //get the api base url from the environment. This url ends with a /
-  private baseUrl: string = environment.usebaseUrlHttps ? environment.webApiBaseUrlHttps : environment.webApiBaseUrlHttp;
-
-  //add api key word to the base url and also add ending / to it
-  private apiBaseUrl: string = `${this.baseUrl}api/`;
+  //api base url ==> comes with /api/
+  private apiBaseUrl: string = environment.usebaseUrlHttps ? environment.webApiBaseUrlHttps : environment.webApiBaseUrlHttp;
+  //signalr hub ==> comes with /hub/
+  private hubBaseUrl: string = environment.usebaseUrlHttps ? environment.webApiBaseHubsUrlHttps : environment.webApiBaseHubsUrlHttp;
 
   constructor() {
-
-    if (environment.displayConsoleLog) {
-      console.log(`ApiUrlService baseUrl: ${this.baseUrl}`);
-      console.log(`ApiUrlService apiBaseUrl: ${this.apiBaseUrl}`);
-    }
 
   }
 
@@ -72,4 +64,8 @@ export class ApiUrlService {
   adminRolesGuidReplace = "[guid]";
   adminUsersWithroles = `${this.adminBaseUrl}users-with-roles`;
   adminEditRoles = `${this.adminBaseUrl}edit-roles/${this.adminRolesGuidReplace}`; //replace [guid] with user guids and pass in the new roles as params
+
+  //signalr urls
+  signalr_presenceUrl = `${this.hubBaseUrl}presence`;
+  signalr_messageUrl = `${this.hubBaseUrl}message`;
 }
