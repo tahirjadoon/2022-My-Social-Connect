@@ -1,0 +1,42 @@
+<!--<h1 class="title">{{ title }}</h1>-->
+
+<!--
+users commented code
+<hr>
+<h2>Users Method 1</h2>
+<div *ngIf="error1 !== ''">
+    Error:{{error1}}
+</div>
+<div *ngIf="error1 === ''">
+    <ul>
+        <li *ngFor='let user of users1'>
+            {{user.id}} - {{user.userName}}
+        </li>
+    </ul>
+    Complete: {{complete1}}
+</div>
+<hr>
+<h2>Users Method 2</h2>
+<div *ngIf="error2 !== ''">
+    Error:{{error2}}
+</div>
+<div *ngIf="error2 === ''">
+    <ul>
+        <li *ngFor='let user2 of users2'>
+            {{user2.id}} - {{user2.userName}}
+        </li>
+    </ul>
+    Complete: {{complete2}}
+</div>
+-->
+<ngx-spinner>
+    <h3>Loading...</h3>
+</ngx-spinner>
+<app-nav [title]="title"></app-nav>
+<div class="container main-container" >
+    <!--add the router outlet-->
+    <!--<app-site-home [title]="title"></app-site-home>-->
+    <router-outlet></router-outlet>
+</div>
+
+<footer><small><span class="title">{{ title }}</span> WebApiURL: <span class="api-url">{{webApiUrl}}</span></small></footer>

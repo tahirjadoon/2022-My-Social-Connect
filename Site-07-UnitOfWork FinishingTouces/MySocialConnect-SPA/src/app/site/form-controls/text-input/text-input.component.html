@@ -1,0 +1,41 @@
+<!-- rf['userName'].errors && (rf['userName'].touched && rf['userName'].dirty) -->
+<!--use $any for the form control or it will complain about 
+        Type 'AbstractControl | null' is not assignable to type 'FormControl'.Type 'null' is not assignable to type 'FormControl'
+-->
+
+<input 
+[class.is-invalid]="ngControl.invalid && ngControl.touched"
+type="{{ type }}"
+class="form-control" 
+[formControl]="$any(ngControl.control)"  
+placeholder="{{ placeHolder }}"
+>
+
+<!--required-->
+<div class="invalid-feedback" *ngIf="ngControl.control?.errors?.['required']">
+    {{label}} is required
+</div>
+<!--minlength-->
+<div class="invalid-feedback" *ngIf="ngControl.control?.errors?.['minlength']">
+    {{label}} must be minimum {{ngControl.control?.errors?.['minlength']['requiredLength']}} characters
+</div>
+<!--maxlength-->
+<div class="invalid-feedback" *ngIf="ngControl.control?.errors?.['maxlength']">
+    {{label}} must be maximum {{ngControl.control?.errors?.['maxlength']['requiredLength']}} characters
+</div>
+<!--onlyChar-->
+<div class="invalid-feedback" *ngIf="ngControl.control?.errors?.['onlyChar']">
+    {{label}} must be only characters
+</div>
+<!--onlyCharWithSpace-->
+<div class="invalid-feedback" *ngIf="ngControl.control?.errors?.['onlyCharWithSpace']">
+    {{label}} must be only characters and space
+</div>
+<!--mustMatch-->
+<div class="invalid-feedback" *ngIf="ngControl.control?.errors?.['mustMatch']">
+    {{labelMustMatch}} do not match
+</div>
+<!--passwordStrength-->
+<div class="invalid-feedback" *ngIf="ngControl.control?.errors?.['passwordStrength']">
+    {{label}} must have an upper case, lower case and a number
+</div>

@@ -1,0 +1,75 @@
+<!--
+    removed *ngIf="member" since now using route resolver and
+    and need to select the messages tab if it has been passed in
+-->
+<div class="row" >
+    <!--left side quick info start-->
+    <div class="col-4">
+        <div class="card">
+            <img src="{{ member.photoUrl || './assets/user.png' }}" alt="{{ member.displayName}}" class="card-img-top img-thumbnail">
+            <div class="card-body">
+                <div class="my-2" *ngIf="isUserOnline">
+                  <i class="fa fa-user-circle text-success"></i> Online now
+                </div>
+                <div>
+                    <strong>Location:</strong>
+                    <p>{{ member.city }}, {{ member.country }}</p>
+                </div>
+                <div>
+                    <strong>Age:</strong>
+                    <p>{{ member.age }}</p>
+                </div>
+                <div>
+                    <strong>Last Active:</strong>
+                    <p>{{ member.lastActive | timeago }}</p>
+                </div>
+                <div>
+                    <strong>Member Since:</strong>
+                    <p>{{ member.createdOn | date:'dd MMMM yyyy' }}</p>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="button-group d-flex">
+                    <button class="btn btn-primary">Like</button>
+                    <button class="btn btn-success ms-1" (click)="selectTab(3)">Message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--left side quick info end-->
+
+    <!--right side detail starts-->
+    <div class="col-8">
+        <!--
+        ngx-bootstrap tabs
+        https://valor-software.com/ngx-bootstrap/#/components/tabs?tab=overview
+        styles for the member-tabset will go in the styles.css.
+        These cannot be put in the local style sheet
+        -->
+        <tabset class="member-tabset" #memberTabs>
+            <tab heading="About {{ member.displayName }}" (selectTab)="onTabActivate($event)">
+                <h4>Description</h4>
+                <p>{{ member.introduction }}</p>
+                <h4>Looking for</h4>
+                <p>{{ member.lookingFor }}</p>
+            </tab>
+            <tab heading="Interests" (selectTab)="onTabActivate($event)">
+                <h4>Interests</h4>
+                <p>{{ member.interests }}</p>
+            </tab>
+            <tab heading="Photos" (selectTab)="onTabActivate($event)">
+                <div *ngIf="galleryImages">
+                    <!--applying local style rather than via a styles.css-->
+                    <ngx-gallery [options]="galleryOptions" [images]="galleryImages" style="display: inline-block; margin-bottom: 20px;"></ngx-gallery>
+                </div>
+            </tab>
+            <tab heading="Messages" (selectTab)="onTabActivate($event)">
+                <h4>Messages</h4>
+                <app-member-messages [messages]="messages" [userId]="member.id"></app-member-messages>
+            </tab>
+        </tabset>
+
+    </div>
+    <!--right side detail ends-->
+
+</div>
