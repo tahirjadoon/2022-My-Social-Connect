@@ -16,6 +16,8 @@ public class AutoMapperProfiles : Profile
         Map_UserRegister_To_AppUser();
         Map_AppUser_To_UserTokenDto();
         Map_Message_to_MessageDto();
+        //We'll have the Z at the end of the dates meaning utc 
+        Map_DateTime_Add_Z_ForUtc();
     }
 
     #region Mappers
@@ -66,6 +68,11 @@ public class AutoMapperProfiles : Profile
         .ForMember(dest => dest.SenderGuid, opt => opt.MapFrom(src => src.Sender.GuId))
         .ForMember(dest => dest.ReceipientGuid, opt => opt.MapFrom(src => src.Receipient.GuId))
         ;
+    }
+
+    private void Map_DateTime_Add_Z_ForUtc()
+    {
+        CreateMap<DateTime, DateTime>().ConvertUsing(d => DateTime.SpecifyKind(d, DateTimeKind.Utc));
     }
 
     #endregion Mappers

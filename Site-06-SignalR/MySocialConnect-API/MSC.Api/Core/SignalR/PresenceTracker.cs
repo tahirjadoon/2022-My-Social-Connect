@@ -20,8 +20,9 @@ public class PresenceTracker
     /// <param name="userName"></param>
     /// <param name="connectionId"></param>
     /// <returns></returns>
-    public Task UserConnected(string userName, string connectionId)
+    public Task<bool> UserConnected(string userName, string connectionId)
     {
+        var isOnline = false;
         lock (_onlineUsers)
         {
             if (_onlineUsers.ContainsKey(userName))
@@ -33,9 +34,12 @@ public class PresenceTracker
             {
                 //add the the user name with the connection id
                 _onlineUsers.Add(userName, new List<string> { connectionId });
+                //user has come online so update the flag
+                isOnline = true;
             }
         }
-        return Task.CompletedTask;
+        //return Task.CompletedTask;
+        return Task.FromResult(isOnline);
     }
 
     /// <summary>
@@ -44,13 +48,15 @@ public class PresenceTracker
     /// <param name="userName"></param>
     /// <param name="connectionId"></param>
     /// <returns></returns>
-    public Task UserDisconnected(string userName, string connectionId)
+    public Task<bool> UserDisconnected(string userName, string connectionId)
     {
+        var isOffline = false;
         lock (_onlineUsers)
         {
             if (!_onlineUsers.ContainsKey(userName))
             {
-                return Task.CompletedTask;
+                //return Task.CompletedTask;
+                return Task.FromResult(isOffline);
             }
             //remove the connection
             _onlineUsers[userName].Remove(connectionId);
@@ -58,9 +64,12 @@ public class PresenceTracker
             {
                 //remove the user
                 _onlineUsers.Remove(userName);
+                //when the user is completely removed then make isoffline true
+                isOffline = true;
             }
         }
-        return Task.CompletedTask;
+        //return Task.CompletedTask;
+        return Task.FromResult(isOffline);
     }
 
     /// <summary>
@@ -75,5 +84,19 @@ public class PresenceTracker
             onlineUsers = _onlineUsers.OrderBy(k => k.Key).Select(k => k.Key).ToArray();
         }
         return Task.FromResult(onlineUsers);
+    }
+
+    /// <summary>
+    /// Get all connections for the user user in MessageHub
+    /// </summary>
+    /// <returns></returns>
+    public Task<List<string>> GetConnectionsForUser(string userName)
+    {
+        List<string> connectionIds;
+        lock (_onlineUsers)
+        {
+            connectionIds = _onlineUsers.GetValueOrDefault(userName);
+        }
+        return Task.FromResult(connectionIds);
     }
 }

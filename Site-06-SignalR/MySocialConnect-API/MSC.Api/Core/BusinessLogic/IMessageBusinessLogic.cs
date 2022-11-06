@@ -8,6 +8,7 @@ namespace MSC.Api.Core.BusinessLogic;
 public interface IMessageBusinessLogic
 {
     Task<BusinessResponse> AddMessage(MessageCreateDto msg, int senderId);
+    Task<BusinessResponse> AddMessage(Message message);
     void DeleteMessage(Message message);
     Task<Message> GetMessage(int id);
     Task<PageList<MessageDto>> GetMessagesForUser(MessageParams msgParams);

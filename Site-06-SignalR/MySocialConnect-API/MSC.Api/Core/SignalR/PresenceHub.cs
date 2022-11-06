@@ -30,12 +30,15 @@ public class PresenceHub : Hub
         //other than the current user tell all others that the user is online
         var userName = Context.User.GetUserName();
         var connectionId = Context.ConnectionId;
-        await _tracker.UserConnected(userName, connectionId);
-        await Clients.Others.SendAsync("UserIsOnline", userName);
+        var isOnline = await _tracker.UserConnected(userName, connectionId);
+        if (isOnline)
+            await Clients.Others.SendAsync("UserIsOnline", userName);
 
-        //get the users online and send to every one who is connected
+        //origial: get the users online and send to every one who is connected
+        //update: get the users online and send to the caller only 
         var currentUsers = await _tracker.GetOnlineUsers();
-        await Clients.All.SendAsync("GetOnlineUsers", currentUsers);
+        //await Clients.All.SendAsync("GetOnlineUsers", currentUsers);
+        await Clients.Caller.SendAsync("GetOnlineUsers", currentUsers);
     }
 
     /// <summary>
@@ -50,12 +53,14 @@ public class PresenceHub : Hub
         //tell all other users when the use goes offline
         var userName = Context.User.GetUserName();
         var connectionId = Context.ConnectionId;
-        await _tracker.UserDisconnected(userName, connectionId);
-        await Clients.Others.SendAsync("UserIsOffline", Context.User.GetUserName());
+        var isOffline = await _tracker.UserDisconnected(userName, connectionId);
+        if (isOffline)
+            await Clients.Others.SendAsync("UserIsOffline", Context.User.GetUserName());
 
-        //get the users online and send to every one who is connected
-        var currentUsers = await _tracker.GetOnlineUsers();
-        await Clients.All.SendAsync("GetOnlineUsers", currentUsers);
+        //original: get the users online and send to every one who is connected
+        //update: not sending the list
+        //var currentUsers = await _tracker.GetOnlineUsers();
+        //await Clients.All.SendAsync("GetOnlineUsers", currentUsers);
 
         await base.OnDisconnectedAsync(exception);
     }

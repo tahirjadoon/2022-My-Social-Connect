@@ -6,6 +6,7 @@ import { MessageDto } from '../../models/messageDto';
 import { UserTokenDto } from '../../models/userTokenDto.model';
 
 import { ApiUrlService } from '../api-url.service';
+import { SignalRGroup } from './signalr-group.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -51,6 +52,19 @@ export class MessageHubService {
           }
         }
       });
+    });
+
+    this.hubConnection.on("UpdatedGroup", (group: SignalRGroup) => {
+      if (group.connections.some(x => x.userName == otherUserName)) {
+        this.messageThread$.pipe(take(1)).subscribe(messages => {
+          if (!messages) return;
+          messages.forEach(message => {
+            if (!message.dateMessageRead)
+              message.dateMessageRead = new Date(Date.now());
+          });
+          this.messageThreadSource.next([...messages]);
+        });
+      }
     });
   }
 

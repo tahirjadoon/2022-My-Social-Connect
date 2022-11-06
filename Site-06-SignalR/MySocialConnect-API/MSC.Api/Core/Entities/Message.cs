@@ -14,5 +14,5 @@ public class Message
     public bool ReceipientDeleted { get; set; }
     public string MessageContent { get; set; }
     public DateTime? DateMessageRead { get; set; }
-    public DateTime DateMessageSent { get; set; } = DateTime.Now;
+    public DateTime DateMessageSent { get; set; } = DateTime.UtcNow;
 }

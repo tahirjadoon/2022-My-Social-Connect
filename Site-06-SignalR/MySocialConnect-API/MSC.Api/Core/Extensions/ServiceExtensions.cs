@@ -44,11 +44,13 @@ public static class ServiceExtensions
         services.AddScoped<IUsersRepository, UsersRepository>();
         services.AddScoped<ILikesRepository, LikesRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
+        services.AddScoped<ISignalRRepository, SignalRRepository>();
 
         //business logic
         services.AddScoped<IUsersBusinessLogic, UsersBusinessLogic>();
         services.AddScoped<ILikesBusinessLogic, LikesBusinessLogic>();
         services.AddScoped<IMessageBusinessLogic, MessageBusinessLogic>();
+        services.AddScoped<ISignalRBusinessLogic, SignalRBusinessLogic>();
 
         //action filters
         services.AddScoped<LogUserActivityFilter>();

@@ -46,6 +46,12 @@ public class MessageBusinessLogic : IMessageBusinessLogic
             MessageContent = msg.Content
         };
 
+        var result = await AddMessage(message);
+        return result;
+    }
+
+    public async Task<BusinessResponse> AddMessage(Message message)
+    {
         _msgRepo.AddMessage(message);
 
         if (await _msgRepo.SaveAllSync())
@@ -53,7 +59,6 @@ public class MessageBusinessLogic : IMessageBusinessLogic
             var msgDto = _mapper.Map<MessageDto>(message);
             return new BusinessResponse(HttpStatusCode.OK, "", msgDto);
         }
-
         return new BusinessResponse(HttpStatusCode.BadRequest, "Unable to send message");
     }
 

@@ -83,7 +83,7 @@ public class MessageRepository : IMessageRepository
         if (unreadMessages != null && unreadMessages.Any())
         {
             //update the date
-            unreadMessages.ForEach(x => { x.DateMessageRead = DateTime.Now; });
+            unreadMessages.ForEach(x => { x.DateMessageRead = DateTime.UtcNow; });
             await _context.SaveChangesAsync();
         }
 

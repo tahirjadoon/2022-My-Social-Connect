@@ -24,6 +24,10 @@ namespace MSC.Api.Core.DB
         //UserMessage will have a table name of Messages
         public DbSet<Message> Messages { get; set; }
 
+        public DbSet<SignalRGroup> SignalRGroups { get; set; }
+
+        public DbSet<SignalRConnection> SignalRConnections { get; set; }
+
         //give entities some configuration
         protected override void OnModelCreating(ModelBuilder builder)
         {

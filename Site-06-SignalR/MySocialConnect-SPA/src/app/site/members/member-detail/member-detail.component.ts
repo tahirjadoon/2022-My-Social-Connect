@@ -74,6 +74,9 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
         this.user = user;
       }
     });
+    //do not use routeReusestrategy. When the user is on detail page for one user and received a new message toast for user two then
+    //the page will not refresh the content
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
   ngOnInit(): void {

@@ -13,7 +13,7 @@
                     <div class="chat-body">
                         <div class="header">
                             <small class="text-muted">
-                                <span class="fa fa-clock-o">{{ message.dateMessageSent | timeago }}</span>
+                                <span class="fa fa-clock-o">{{ message.dateMessageSent | timeago }}</span>&nbsp;
                                 <!--for the other user, not the logged in user-->
                                 <span class="text-danger ms-1" *ngIf="!message.dateMessageRead && message.senderId !== userId">(unread)</span>
                                 <span class="text-success ms-1" *ngIf="message.dateMessageRead && message.senderId !== userId">(read {{ message.dateMessageRead | timeago }})</span>
@@ -21,7 +21,7 @@
                             </small>
                         </div>
                     </div>
-                    <p>{{ message.messageContent }}</p>
+                    <p [ngClass]="{currentUser: message.senderId !== userId}">{{ message.messageContent }}</p>
                 </div>
             </li>
         </ul>
