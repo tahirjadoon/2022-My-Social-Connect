@@ -47,6 +47,8 @@ public class MessageRepository : IMessageRepository
 
     public async Task<PageList<MessageDto>> GetMessagesForUser(MessageParams msgParams)
     {
+        //moving the projection earlier to make the query cleaner
+        /*
         var query = _context.Messages.OrderByDescending(m => m.DateMessageSent).AsQueryable();
 
         query = msgParams.MessageType switch
@@ -60,16 +62,34 @@ public class MessageRepository : IMessageRepository
         };
 
         var messages = query.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
+        */
 
-        var pageList = await PageList<MessageDto>.CreateAsync(messages, msgParams.PageNumber, msgParams.PageSize);
+        var query = _context.Messages
+                    .OrderByDescending(m => m.DateMessageSent)
+                    .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
+                    .AsQueryable();
+
+        query = msgParams.MessageType switch
+        {
+            //receipent of the message
+            MessageType.Inbox => query.Where(u => u.ReceipientId == msgParams.UserId && !u.ReceipientDeleted),
+            //receipent of the message and not read it
+            MessageType.InboxUnread => query.Where(u => u.ReceipientId == msgParams.UserId && u.DateMessageRead == null && !u.ReceipientDeleted),
+            //defult sender outbox
+            _ => query.Where(u => u.SenderId == msgParams.UserId && !u.SenderDeleted)
+        };
+
+        var pageList = await PageList<MessageDto>.CreateAsync(query, msgParams.PageNumber, msgParams.PageSize);
 
         return pageList;
     }
 
     //message thread between two users so check for both ways. Also eagily load photos for both receipent and sender
-    public async Task<IEnumerable<Message>> GetMessageThread(int currentUserId, int receipientId)
+    public async Task<IEnumerable<MessageDto>> GetMessageThread(int currentUserId, int receipientId)
     {
         //message conversations between two users
+        //change it to using projections to make the query better
+        /*
         var messages = await _context.Messages
                                     .Include(u => u.Receipient).ThenInclude(p => p.Photos)
                                     .Include(u => u.Sender).ThenInclude(p => p.Photos)
@@ -80,18 +100,29 @@ public class MessageRepository : IMessageRepository
                                     .OrderBy(m => m.DateMessageSent)
                                     .ToListAsync();
         var unreadMessages = messages.Where(m => m.DateMessageRead == null && m.Receipient.Id == currentUserId).ToList();
+        */
+        var messages = await _context.Messages
+                                    .Where(m =>
+                                            (m.Receipient.Id == currentUserId && m.Sender.Id == receipientId && !m.ReceipientDeleted) ||
+                                            (m.Receipient.Id == receipientId && m.Sender.Id == currentUserId && !m.SenderDeleted)
+                                        )
+                                    .OrderBy(m => m.DateMessageSent)
+                                    .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
+                                    .ToListAsync();
+        var unreadMessages = messages.Where(m => m.DateMessageRead == null && m.ReceipientId == currentUserId).ToList();
         if (unreadMessages != null && unreadMessages.Any())
         {
             //update the date
             unreadMessages.ForEach(x => { x.DateMessageRead = DateTime.UtcNow; });
-            await _context.SaveChangesAsync();
         }
 
         return messages;
     }
 
+    /*
     public async Task<bool> SaveAllSync()
     {
         return await _context.SaveChangesAsync() > 0;
     }
+    */
 }

@@ -9,7 +9,7 @@ namespace MSC.Api.Core.Repositories;
 public interface IUsersRepository
 {
     void Update(AppUser user);
-    Task<bool> SaveAllAsync();
+    //Task<bool> SaveAllAsync();
     //Rather than returning list of userDto, will return pageList<userDto>
     //Task<IEnumerable<UserDto>> GetUsersAsync();
     Task<PageList<UserDto>> GetUsersAsync(UserParams userParams);
@@ -18,6 +18,6 @@ public interface IUsersRepository
     Task<UserDto> GetUserAsync(string userName);
     Task<AppUser> GetAppUserAsync(string userName, bool includePhotos = false);
     Task<AppUser> GetAppUserAsync(int id, bool includePhotos = false);
-    Task<bool> RegisterAsync(AppUser user);
+    void Register(AppUser appUser);
     Task<bool> UserExistsAsync(string userName);
 }

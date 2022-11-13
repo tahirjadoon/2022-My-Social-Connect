@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using MSC.Api.Core.BusinessLogic;
+using MSC.Api.Core.DB.UnitOfWork;
 using MSC.Api.Core.Dto;
 using MSC.Api.Core.Entities;
 using MSC.Api.Core.Extensions;
@@ -20,21 +21,21 @@ namespace MSC.Api.Core.SignalR;
 /// </summary>
 public class MessageHub : Hub
 {
+    private readonly IUnitOfWork _uow;
     private readonly IMessageBusinessLogic _msgBl;
     private readonly ISignalRBusinessLogic _signalrBl;
-    private readonly IUsersRepository _usersRepo;
     private readonly IHubContext<PresenceHub> _presenceHub;
     private readonly PresenceTracker _presenceTracker;
     private readonly IMapper _mapper;
 
-    public MessageHub(IUsersRepository userRepo,
+    public MessageHub(IUnitOfWork uow,
         IMessageBusinessLogic msgBl,
         ISignalRBusinessLogic signalrBl,
         IHubContext<PresenceHub> presenceHub,
         PresenceTracker presenceTracker,
         IMapper mapper)
     {
-        _usersRepo = userRepo;
+        _uow = uow;
         _msgBl = msgBl;
         _signalrBl = signalrBl;
         _presenceHub = presenceHub;
@@ -141,12 +142,12 @@ public class MessageHub : Hub
             throw new HubException("Message info invalid");
 
         //sender user 
-        var sender = await _usersRepo.GetAppUserAsync(userClaims.UserId, includePhotos: true);
+        var sender = await _uow.UsersRepo.GetAppUserAsync(userClaims.UserId, includePhotos: true);
         if (sender == null)
             throw new HubException("Logged in user not found");
 
         //receipient
-        var receipient = await _usersRepo.GetAppUserAsync(msg.ReceipientUserId, includePhotos: true);
+        var receipient = await _uow.UsersRepo.GetAppUserAsync(msg.ReceipientUserId, includePhotos: true);
         if (receipient == null)
             throw new HubException("Receipient not found");
 

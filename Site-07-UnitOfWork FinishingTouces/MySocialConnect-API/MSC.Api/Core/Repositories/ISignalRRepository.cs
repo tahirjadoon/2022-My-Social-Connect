@@ -9,5 +9,5 @@ public interface ISignalRRepository
     Task<SignalRConnection> GetConnection(string connectionId);
     Task<SignalRGroup> GetMessageGroup(string groupName);
     Task<SignalRGroup> GetGroupForConnection(string connectionId);
-    Task<bool> SaveAllAsync();
+    //Task<bool> SaveAllAsync();
 }

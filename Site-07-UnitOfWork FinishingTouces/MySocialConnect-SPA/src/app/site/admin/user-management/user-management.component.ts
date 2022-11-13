@@ -10,6 +10,8 @@ import { userDto } from '../../../core/models/userDto.model';
 import { AdminService } from '../../../core/services/admin.service';
 import { RolesModalComponent } from '../../modals/roles-modal/roles-modal.component';
 
+//also check /core/services/confirm.service for abother use of bsModalRef
+
 @Component({
   selector: 'app-user-management',
   templateUrl: './user-management.component.html',

@@ -16,8 +16,10 @@ public class AutoMapperProfiles : Profile
         Map_UserRegister_To_AppUser();
         Map_AppUser_To_UserTokenDto();
         Map_Message_to_MessageDto();
+
+        //not using any more since DBContext has a function to fix the utc date issue
         //We'll have the Z at the end of the dates meaning utc 
-        Map_DateTime_Add_Z_ForUtc();
+        //Map_DateTime_Add_Z_ForUtc();
     }
 
     #region Mappers
@@ -88,5 +90,4 @@ public class AutoMapperProfiles : Profile
     }
 
     #endregion Helper Functions
-
 }

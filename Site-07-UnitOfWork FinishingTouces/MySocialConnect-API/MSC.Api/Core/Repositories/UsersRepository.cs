@@ -136,14 +136,12 @@ public class UsersRepository : IUsersRepository
         return user;
     }
 
-    public async Task<bool> RegisterAsync(AppUser appUser)
+    public void Register(AppUser appUser)
     {
         if (appUser == null)
             throw new ValidationException("Invalid user");
 
         _context.Users.Add(appUser);
-        var isSave = await SaveAllAsync();
-        return isSave;
     }
 
     public async Task<bool> UserExistsAsync(string userName)
@@ -162,10 +160,12 @@ public class UsersRepository : IUsersRepository
         _context.Entry<AppUser>(user).State = EntityState.Modified;
     }
 
+    /*
     public async Task<bool> SaveAllAsync()
     {
         //make sure that the changes have been saved
         var isSave = await _context.SaveChangesAsync() > 0;
         return isSave;
     }
+    */
 }

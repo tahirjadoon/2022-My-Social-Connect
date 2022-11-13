@@ -12,6 +12,7 @@ import { Pagination } from '../../core/models/helpers/pagination.model';
 import { MessageDto } from '../../core/models/messageDto';
 
 import { MessageService } from '../../core/services/message.service';
+import { ConfirmService } from '../../core/services/confirm.service';
 
 @Component({
   selector: 'app-messages',
@@ -29,7 +30,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   messageSubscription!: Subscription;
 
-  constructor(private msgService: MessageService, private toastrService: ToastrService) {
+  constructor(private msgService: MessageService, private toastrService: ToastrService, private confirmService: ConfirmService) {
     this.msgParams = new MessageParams();
     this.msgTypeString = zMessageType[this.msgParams.messageType];
   }
@@ -103,6 +104,21 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   onDeleteMessage(msgId: number) {
+    //call the confirmService and overwrite the defaults
+    const title = 'Confirm Delete';
+    const message = 'Are you sure to delete the message? This cannot be undone.';
+    const btnDelete = 'Delete';
+    this.confirmService.confirm(title, message, btnDelete).subscribe({
+      next: result => {
+        //only delete when true is returned
+        if (result) this.performDelete(msgId);
+      },
+      error: e => { },
+      complete: () => {}
+    })
+  }
+
+  private performDelete(msgId: number) {
     this.msgService.deleteMessage(msgId).subscribe({
       next: () => {
         //remove the message from the messages by passing the index and total number of messages to delete which is one in this case
@@ -113,5 +129,4 @@ export class MessagesComponent implements OnInit, OnDestroy {
       complete: () => { }
     });
   }
-
 }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MSC.Api.Core.Constants;
+using MSC.Api.Core.DB.UnitOfWork;
 using MSC.Api.Core.Dto;
 using MSC.Api.Core.Dto.Helpers;
 using MSC.Api.Core.Entities;
@@ -23,39 +24,39 @@ public class UsersBusinessLogic : IUsersBusinessLogic
     private readonly UserManager<AppUser> _userManager;
     private readonly SignInManager<AppUser> _signInManager;
     private readonly RoleManager<AppRole> _roleManager;
-    private readonly IUsersRepository _usersRepo;
     private readonly ITokenService _tokenService;
     private readonly IPhotoService _photoService;
     private readonly IMapper _mapper;
+    private readonly IUnitOfWork _uow;
 
     public UsersBusinessLogic(
         UserManager<AppUser> userManager,
         SignInManager<AppUser> signInManager,
         RoleManager<AppRole> roleManager,
-        IUsersRepository usersRepo,
         ITokenService tokenService,
         IPhotoService photoService,
-        IMapper mapper)
+        IMapper mapper,
+        IUnitOfWork uow)
     {
         _tokenService = tokenService;
         _userManager = userManager;
         _signInManager = signInManager;
         _roleManager = roleManager;
-        _usersRepo = usersRepo;
         _photoService = photoService;
         _mapper = mapper;
+        _uow = uow;
     }
 
     public async Task<PageList<UserDto>> GetUsersAsync(UserParams userParams)
     {
-        var users = await _usersRepo.GetUsersAsync(userParams);
+        var users = await _uow.UsersRepo.GetUsersAsync(userParams);
         if (users == null || !users.Any()) return null;
         return users;
     }
 
     public async Task<UserDto> GetUserByGuidAsync(Guid id)
     {
-        var user = await _usersRepo.GetUserByGuidAsync(id);
+        var user = await _uow.UsersRepo.GetUserByGuidAsync(id);
         if (user == null) return null;
 
         return user;
@@ -63,7 +64,7 @@ public class UsersBusinessLogic : IUsersBusinessLogic
 
     public async Task<UserDto> GetUserAsync(int id)
     {
-        var user = await _usersRepo.GetUserAsync(id);
+        var user = await _uow.UsersRepo.GetUserAsync(id);
         if (user == null) return null;
 
         return user;
@@ -71,7 +72,7 @@ public class UsersBusinessLogic : IUsersBusinessLogic
 
     public async Task<UserDto> GetUserAsync(string name)
     {
-        var user = await _usersRepo.GetUserAsync(name);
+        var user = await _uow.UsersRepo.GetUserAsync(name);
         if (user == null) return null;
 
         return user;
@@ -79,7 +80,7 @@ public class UsersBusinessLogic : IUsersBusinessLogic
 
     public async Task<bool> UpdateUserAsync(UserUpdateDto userUpdateDto, UserClaimGetDto claims)
     {
-        var user = await _usersRepo.GetAppUserAsync(claims.UserId);
+        var user = await _uow.UsersRepo.GetAppUserAsync(claims.UserId);
         if (user == null || user.GuId != claims.Guid)
             return false;
 
@@ -87,10 +88,10 @@ public class UsersBusinessLogic : IUsersBusinessLogic
         var updates = _mapper.Map(userUpdateDto, user);
 
         //issue update but it will not save
-        _usersRepo.Update(updates);
+        _uow.UsersRepo.Update(updates);
 
         //save update
-        if (await _usersRepo.SaveAllAsync())
+        if (await _uow.Complete())
             return true;
 
         return false;
@@ -106,14 +107,14 @@ public class UsersBusinessLogic : IUsersBusinessLogic
         if (userId <= 0) return;
 
         //app user 
-        var user = await _usersRepo.GetAppUserAsync(userId);
+        var user = await _uow.UsersRepo.GetAppUserAsync(userId);
         if (user == null) return;
 
         //update the last active date 
-        user.LastActive = DateTime.Now;
+        user.LastActive = DateTime.UtcNow;
 
         //update 
-        await _usersRepo.SaveAllAsync();
+        await _uow.Complete();
     }
 
     public async Task<UserTokenDto> RegisterAsync(UserRegisterDto registerUser)
@@ -159,7 +160,7 @@ public class UsersBusinessLogic : IUsersBusinessLogic
             throw new ValidationException("User info missing"); //exception middleware
 
         //check user not already taken
-        var isUser = await _usersRepo.UserExistsAsync(registerUser.UserName);
+        var isUser = await _uow.UsersRepo.UserExistsAsync(registerUser.UserName);
         if (isUser)
             throw new ValidationException("Username already taken"); //exception middleware
 
@@ -176,7 +177,7 @@ public class UsersBusinessLogic : IUsersBusinessLogic
         if (!roleResult.Succeeded)
             throw new DataFailException(roleResult.Errors.ToString());
 
-        var returnUser = await _usersRepo.GetAppUserAsync(user.UserName);
+        var returnUser = await _uow.UsersRepo.GetAppUserAsync(user.UserName);
         if (returnUser == null)
             throw new DataFailException("Something went wrong. No user found!");
 
@@ -186,7 +187,7 @@ public class UsersBusinessLogic : IUsersBusinessLogic
     public async Task<PhotoDto> AddPhoto(IFormFile file, UserClaimGetDto claims)
     {
         //get app user with photos
-        var appUser = await _usersRepo.GetAppUserAsync(claims.UserId, includePhotos: true);
+        var appUser = await _uow.UsersRepo.GetAppUserAsync(claims.UserId, includePhotos: true);
         if (appUser == null)
             throw new UnauthorizedAccessException("User not found"); //exception middleware
 
@@ -207,7 +208,7 @@ public class UsersBusinessLogic : IUsersBusinessLogic
         //add the photo. Photos is an abstract method so cannot be null
         appUser.Photos.Add(photo);
 
-        if (await _usersRepo.SaveAllAsync())
+        if (await _uow.Complete())
         {
             return _mapper.Map<PhotoDto>(photo);
         }
@@ -218,7 +219,7 @@ public class UsersBusinessLogic : IUsersBusinessLogic
     public async Task<bool> SetPhotoMain(int photoId, UserClaimGetDto claims)
     {
         //get app user with photos
-        var appUser = await _usersRepo.GetAppUserAsync(claims.UserId, includePhotos: true);
+        var appUser = await _uow.UsersRepo.GetAppUserAsync(claims.UserId, includePhotos: true);
         if (appUser == null)
             throw new UnauthorizedAccessException("User not found"); //exception middleware
 
@@ -235,7 +236,7 @@ public class UsersBusinessLogic : IUsersBusinessLogic
 
         photo.IsMain = true;
 
-        if (await _usersRepo.SaveAllAsync())
+        if (await _uow.Complete())
             return true;
 
         return false;
@@ -244,7 +245,7 @@ public class UsersBusinessLogic : IUsersBusinessLogic
     public async Task<BusinessResponse> DeletePhoto(int photoId, UserClaimGetDto claims)
     {
         //get app user with photos
-        var appUser = await _usersRepo.GetAppUserAsync(claims.UserId, includePhotos: true);
+        var appUser = await _uow.UsersRepo.GetAppUserAsync(claims.UserId, includePhotos: true);
         if (appUser == null)
             throw new UnauthorizedAccessException("User not found"); //exception middleware
 
@@ -280,7 +281,7 @@ public class UsersBusinessLogic : IUsersBusinessLogic
         //remove from the database as well 
         appUser.Photos.Remove(photo);
 
-        if (await _usersRepo.SaveAllAsync())
+        if (await _uow.Complete())
         {
             response.HttpStatusCode = HttpStatusCode.OK;
             return response;

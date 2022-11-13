@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace MSC.Api.Core.Dto;
 public class MessageDto
@@ -15,4 +16,10 @@ public class MessageDto
     public string MessageContent { get; set; }
     public DateTime? DateMessageRead { get; set; }
     public DateTime DateMessageSent { get; set; }
+
+    [JsonIgnore]
+    public bool ReceipientDeleted { get; set; }
+
+    [JsonIgnore]
+    public bool SenderDeleted { get; set; }
 }

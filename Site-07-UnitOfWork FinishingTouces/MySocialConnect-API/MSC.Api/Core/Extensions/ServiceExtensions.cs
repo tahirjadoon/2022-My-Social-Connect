@@ -13,6 +13,7 @@ using MSC.Api.Core.Constants;
 using MSC.Api.Core.Dto.Helpers;
 using MSC.Api.Core.ActionFilters;
 using MSC.Api.Core.SignalR;
+using MSC.Api.Core.DB.UnitOfWork;
 
 namespace MSC.Api.Core.Extensions;
 public static class ServiceExtensions
@@ -41,10 +42,14 @@ public static class ServiceExtensions
         services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
         //repositories
+        //using unit of work so individual repos commented
+        /*
         services.AddScoped<IUsersRepository, UsersRepository>();
         services.AddScoped<ILikesRepository, LikesRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<ISignalRRepository, SignalRRepository>();
+        */
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         //business logic
         services.AddScoped<IUsersBusinessLogic, UsersBusinessLogic>();

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
+using MSC.Api.Core.DB.UnitOfWork;
 using MSC.Api.Core.Dto;
 using MSC.Api.Core.Dto.Helpers;
 using MSC.Api.Core.Entities;
@@ -10,14 +11,13 @@ using MSC.Api.Core.Repositories;
 namespace MSC.Api.Core.BusinessLogic;
 public class MessageBusinessLogic : IMessageBusinessLogic
 {
-    private readonly IMessageRepository _msgRepo;
-    private readonly IUsersRepository _usersRepo;
     private readonly IMapper _mapper;
 
-    public MessageBusinessLogic(IMessageRepository msgRepo, IUsersRepository userRepo, IMapper mapper)
+    private readonly IUnitOfWork _uow;
+
+    public MessageBusinessLogic(IUnitOfWork uow, IMapper mapper)
     {
-        _msgRepo = msgRepo;
-        _usersRepo = userRepo;
+        _uow = uow;
         _mapper = mapper;
     }
 
@@ -27,13 +27,13 @@ public class MessageBusinessLogic : IMessageBusinessLogic
             return new BusinessResponse(HttpStatusCode.BadRequest, "Message not good");
 
         //get source user 
-        var sender = await _usersRepo.GetAppUserAsync(senderId, includePhotos: true);
+        var sender = await _uow.UsersRepo.GetAppUserAsync(senderId, includePhotos: true);
         if (sender == null)
             return new BusinessResponse(HttpStatusCode.NotFound, "Logged in user not found");
         if (sender.Id == msg.ReceipientUserId)
             return new BusinessResponse(HttpStatusCode.BadRequest, "You cannot send message to your self");
 
-        var receipient = await _usersRepo.GetAppUserAsync(msg.ReceipientUserId, includePhotos: true);
+        var receipient = await _uow.UsersRepo.GetAppUserAsync(msg.ReceipientUserId, includePhotos: true);
         if (receipient == null)
             return new BusinessResponse(HttpStatusCode.NotFound, "Receipient not found");
 
@@ -52,9 +52,9 @@ public class MessageBusinessLogic : IMessageBusinessLogic
 
     public async Task<BusinessResponse> AddMessage(Message message)
     {
-        _msgRepo.AddMessage(message);
+        _uow.MessageRepo.AddMessage(message);
 
-        if (await _msgRepo.SaveAllSync())
+        if (await _uow.Complete())
         {
             var msgDto = _mapper.Map<MessageDto>(message);
             return new BusinessResponse(HttpStatusCode.OK, "", msgDto);
@@ -74,7 +74,7 @@ public class MessageBusinessLogic : IMessageBusinessLogic
 
     public async Task<PageList<MessageDto>> GetMessagesForUser(MessageParams msgParams)
     {
-        var messages = await _msgRepo.GetMessagesForUser(msgParams);
+        var messages = await _uow.MessageRepo.GetMessagesForUser(msgParams);
         return messages;
     }
 
@@ -82,17 +82,21 @@ public class MessageBusinessLogic : IMessageBusinessLogic
     //message between two users. Also marks receipients un read messages as read
     public async Task<IEnumerable<MessageDto>> GetMessageThread(int currentUserId, int receipientId)
     {
-        var messages = await _msgRepo.GetMessageThread(currentUserId, receipientId);
+        var messages = await _uow.MessageRepo.GetMessageThread(currentUserId, receipientId);
         if (messages == null)
             return null;
 
-        var messagesDto = _mapper.Map<IEnumerable<MessageDto>>(messages);
-        return messagesDto;
+        if (_uow.HasChanges())
+            await _uow.Complete();
+
+        //var messagesDto = _mapper.Map<IEnumerable<MessageDto>>(messages);
+        //return messagesDto;
+        return messages;
     }
 
     public async Task<BusinessResponse> DeleteMessage(int currentUserId, int msgId)
     {
-        var message = await _msgRepo.GetMessage(msgId);
+        var message = await _uow.MessageRepo.GetMessage(msgId);
         if (message.Sender.Id != currentUserId && message.Receipient.Id != currentUserId)
             return new BusinessResponse(HttpStatusCode.Unauthorized);
 
@@ -106,9 +110,9 @@ public class MessageBusinessLogic : IMessageBusinessLogic
 
         //when both have deleted it then delete it altogether
         if (message.SenderDeleted && message.ReceipientDeleted)
-            _msgRepo.DeleteMessage(message);
+            _uow.MessageRepo.DeleteMessage(message);
 
-        if (await _msgRepo.SaveAllSync())
+        if (await _uow.Complete())
             return new BusinessResponse(HttpStatusCode.OK);
 
         return new BusinessResponse(HttpStatusCode.BadRequest, "Unable to delete message");

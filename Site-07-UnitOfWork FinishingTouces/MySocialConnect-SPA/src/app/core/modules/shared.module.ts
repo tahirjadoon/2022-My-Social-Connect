@@ -33,6 +33,7 @@ import { UserManagementComponent } from '../../site/admin/user-management/user-m
 import { PhotoManagementComponent } from '../../site/admin/photo-management/photo-management.component';
 
 import { RolesModalComponent } from '../../site/modals/roles-modal/roles-modal.component';
+import { ConfirmModalComponent } from '../../site/modals/confirm-modal/confirm-modal.component';
 
 import { TextInputComponent } from '../../site/form-controls/text-input/text-input.component';
 import { DateInputComponent } from '../../site/form-controls/date-input/date-input.component';
@@ -65,6 +66,7 @@ import { AppRoutingModule } from '../../app-routing.module';
     RolesModalComponent,
     ValidatorsTransformPipe,
     HasRoleDirective,
+    ConfirmModalComponent,
   ],
   imports: [
     CommonModule,
