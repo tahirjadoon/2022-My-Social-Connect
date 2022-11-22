@@ -54,25 +54,28 @@ public class UsersBusinessLogic : IUsersBusinessLogic
         return users;
     }
 
-    public async Task<UserDto> GetUserByGuidAsync(Guid id)
+    public async Task<UserDto> GetUserByGuidAsync(Guid id, UserClaimGetDto claims)
     {
-        var user = await _uow.UsersRepo.GetUserByGuidAsync(id);
+        var isCurrent = claims != null && claims.Guid == id;
+        var user = await _uow.UsersRepo.GetUserByGuidAsync(id, isCurrentUser: isCurrent);
         if (user == null) return null;
 
         return user;
     }
 
-    public async Task<UserDto> GetUserAsync(int id)
+    public async Task<UserDto> GetUserAsync(int id, UserClaimGetDto claims)
     {
-        var user = await _uow.UsersRepo.GetUserAsync(id);
+        var isCurrent = claims != null && claims.UserId == id;
+        var user = await _uow.UsersRepo.GetUserAsync(id, isCurrentUser: isCurrent);
         if (user == null) return null;
 
         return user;
     }
 
-    public async Task<UserDto> GetUserAsync(string name)
+    public async Task<UserDto> GetUserAsync(string name, UserClaimGetDto claims)
     {
-        var user = await _uow.UsersRepo.GetUserAsync(name);
+        var isCurrent = claims != null && claims.UserName == name;
+        var user = await _uow.UsersRepo.GetUserAsync(name, isCurrentUser: isCurrent);
         if (user == null) return null;
 
         return user;
@@ -201,8 +204,9 @@ public class UsersBusinessLogic : IUsersBusinessLogic
         var photo = new Photo
         {
             Url = result.SecureUrl.AbsoluteUri, //set photo url
-            PublicId = result.PublicId, //set public id
-            IsMain = appUser.Photos == null || !appUser.Photos.Any() //mark it active when no other photos are available
+            PublicId = result.PublicId //set public id
+            //cannot make unapproved photo a main photo so disabling
+            //IsMain = appUser.Photos == null || !appUser.Photos.Any() //mark it active when no other photos are available
         };
 
         //add the photo. Photos is an abstract method so cannot be null

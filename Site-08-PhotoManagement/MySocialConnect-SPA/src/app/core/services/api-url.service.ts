@@ -62,8 +62,12 @@ export class ApiUrlService {
   //admin controller urls
   private adminBaseUrl = `${this.apiBaseUrl}admin/`;
   adminRolesGuidReplace = "[guid]";
+  adminPhotoIdReplace = "[photoId]";
   adminUsersWithroles = `${this.adminBaseUrl}users-with-roles`;
   adminEditRoles = `${this.adminBaseUrl}edit-roles/${this.adminRolesGuidReplace}`; //replace [guid] with user guids and pass in the new roles as params
+  adminPhotosToModerate = `${this.adminBaseUrl}photos-to-moderate`;
+  adminApprovePhoto = `${this.adminBaseUrl}approve-photo/${this.adminPhotoIdReplace}`; //replace [photoId] with photoId
+  adminRejectPhoto = `${this.adminBaseUrl}reject-photo/${this.adminPhotoIdReplace}`; //replace [photoId] with photoId
 
   //signalr urls
   signalr_presenceUrl = `${this.hubBaseUrl}presence`;

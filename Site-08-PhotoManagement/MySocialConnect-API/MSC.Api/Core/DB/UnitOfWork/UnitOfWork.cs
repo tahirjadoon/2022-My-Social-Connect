@@ -23,6 +23,8 @@ public class UnitOfWork : IUnitOfWork
 
     public ISignalRRepository SignalRRepo => new SignalRRepository(_context, _mapper);
 
+    public IPhotoRepository PhotoRepo => new PhotoRepository(_context);
+
     public async Task<bool> Complete()
     {
         return await _context.SaveChangesAsync() > 0;

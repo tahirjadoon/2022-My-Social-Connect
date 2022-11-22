@@ -1,5 +1,5 @@
 hr{
-    border: 1px dashed black; 
+    border: 1px dashed black;
     background-color: #fff;
 }
 img.img-thumbnail{
@@ -13,4 +13,16 @@ img.img-thumbnail{
 /*Remove "no files selected text next to the buttons" */
 input[type=file]{
     color: transparent;
+}
+
+
+.not-approved {
+  opacity: 0.2;
+}
+.img-wrapper {
+  position: relative
+}
+.img-text {
+  position: absolute;
+  bottom: 30%;
 }

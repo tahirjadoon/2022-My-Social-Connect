@@ -10,6 +10,7 @@ public class Photo
     public string Url { get; set; }
     public bool IsMain { get; set; }
     public string PublicId { get; set; }
+    public bool IsApproved { get; set; }
 
     //fully defining the relationship between AppUser and Photos
     public AppUser AppUser { get; set; }

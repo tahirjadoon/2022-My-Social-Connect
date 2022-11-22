@@ -60,7 +60,7 @@ public class UsersRepository : IUsersRepository
         return pageList;
     }
 
-    public async Task<UserDto> GetUserByGuidAsync(Guid id)
+    public async Task<UserDto> GetUserByGuidAsync(Guid id, bool isCurrentUser)
     {
         //var user = await _context.Users.FindAsync(id);
         //add photos as eager loading
@@ -68,6 +68,7 @@ public class UsersRepository : IUsersRepository
         //return user;
 
         //using automapper queryable extensions
+        /*
         var user = await _context.Users
                     .Where(x => x.GuId == id)
                     .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
@@ -75,9 +76,21 @@ public class UsersRepository : IUsersRepository
                     .AsNoTracking()
                     .SingleOrDefaultAsync();
         return user;
+        */
+
+        //ignore query filter for the current user as it is setup via dbcontext
+        var query = _context.Users
+                    .Where(x => x.GuId == id)
+                    .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+                    .AsQueryable();
+        if (isCurrentUser)
+            query = query.IgnoreQueryFilters();
+
+        var user = await query.FirstOrDefaultAsync();
+        return user;
     }
 
-    public async Task<UserDto> GetUserAsync(int id)
+    public async Task<UserDto> GetUserAsync(int id, bool isCurrentUser)
     {
         //var user = await _context.Users.FindAsync(id);
         //add photos as eager loading
@@ -85,6 +98,7 @@ public class UsersRepository : IUsersRepository
         //return user;
 
         //using automapper queryable extensions
+        /*
         var user = await _context.Users
                     .Where(x => x.Id == id)
                     .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
@@ -92,9 +106,21 @@ public class UsersRepository : IUsersRepository
                     .AsNoTracking()
                     .SingleOrDefaultAsync();
         return user;
+        */
+
+        //ignore query filter for the current user as it is setup via dbcontext
+        var query = _context.Users
+                    .Where(x => x.Id == id)
+                    .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+                    .AsQueryable();
+        if (isCurrentUser)
+            query = query.IgnoreQueryFilters();
+
+        var user = await query.FirstOrDefaultAsync();
+        return user;
     }
 
-    public async Task<UserDto> GetUserAsync(string userName)
+    public async Task<UserDto> GetUserAsync(string userName, bool isCurrentUser)
     {
         if (userName == null)
             throw new ValidationException("Invalid userName");
@@ -103,12 +129,25 @@ public class UsersRepository : IUsersRepository
         //return user;
 
         //using automapper queryable extensions
+        /*
         var user = await _context.Users
                     .Where(x => x.UserName.ToLower() == userName.ToLower())
                     .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
                     .AsSplitQuery()
                     .AsNoTracking()
                     .SingleOrDefaultAsync();
+        return user;
+        */
+
+        //ignore query filter for the current user as it is setup via dbcontext
+        var query = _context.Users
+                    .Where(x => x.UserName.ToLower() == userName.ToLower())
+                    .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+                    .AsQueryable();
+        if (isCurrentUser)
+            query = query.IgnoreQueryFilters();
+
+        var user = await query.FirstOrDefaultAsync();
         return user;
     }
 
@@ -168,4 +207,14 @@ public class UsersRepository : IUsersRepository
         return isSave;
     }
     */
+
+    public async Task<AppUser> GetUserByPhotoId(int photoId)
+    {
+        var user = await _context.Users
+                                .Include(p => p.Photos)
+                                .IgnoreQueryFilters()
+                                .Where(p => p.Photos.Any(x => x.Id == photoId))
+                                .FirstOrDefaultAsync();
+        return user;
+    }
 }

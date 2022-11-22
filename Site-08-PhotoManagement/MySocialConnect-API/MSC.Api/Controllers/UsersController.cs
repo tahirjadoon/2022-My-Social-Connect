@@ -26,8 +26,14 @@ public class UsersController : BaseApiController
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers([FromQuery] UserParams userParams)
     {
+        var userClaims = User.GetUserClaims();
+        if (userClaims == null || (!userClaims.HasGuid || !userClaims.HasUserName))
+        {
+            return BadRequest("User issue");
+        }
+
         //get the current user
-        var user = await _usersBl.GetUserAsync(User.GetUserName());
+        var user = await _usersBl.GetUserAsync(userClaims.UserName, userClaims);
         if (user == null)
         {
             return BadRequest("User issue");
@@ -53,7 +59,12 @@ public class UsersController : BaseApiController
     [HttpGet("{guid}/guid", Name = "GetUserByGuid")]
     public async Task<ActionResult<UserDto>> GetUser(Guid guid)
     {
-        var user = await _usersBl.GetUserByGuidAsync(guid);
+        var userClaims = User.GetUserClaims();
+        if (userClaims == null || (!userClaims.HasGuid || !userClaims.HasUserName))
+        {
+            return BadRequest("User issue");
+        }
+        var user = await _usersBl.GetUserByGuidAsync(guid, userClaims);
         if (user == null)
         {
             return NotFound($"No user found by guid {guid}");
@@ -65,7 +76,13 @@ public class UsersController : BaseApiController
     [HttpGet("{id}/id", Name = "GetUserById")]
     public async Task<ActionResult<UserDto>> GetUser(int id)
     {
-        var user = await _usersBl.GetUserAsync(id);
+        var userClaims = User.GetUserClaims();
+        if (userClaims == null || (!userClaims.HasGuid || !userClaims.HasUserName))
+        {
+            return BadRequest("User issue");
+        }
+
+        var user = await _usersBl.GetUserAsync(id, userClaims);
         if (user == null)
         {
             return NotFound($"No user found by id {id}");
@@ -77,7 +94,13 @@ public class UsersController : BaseApiController
     [HttpGet("{name}/name", Name = "GetUserByName")]
     public async Task<ActionResult<UserDto>> GetUser(string name)
     {
-        var user = await _usersBl.GetUserAsync(name);
+        var userClaims = User.GetUserClaims();
+        if (userClaims == null || (!userClaims.HasGuid || !userClaims.HasUserName))
+        {
+            return BadRequest("User issue");
+        }
+
+        var user = await _usersBl.GetUserAsync(name, userClaims);
         if (user == null)
         {
             return NotFound($"No user found by name {name}");

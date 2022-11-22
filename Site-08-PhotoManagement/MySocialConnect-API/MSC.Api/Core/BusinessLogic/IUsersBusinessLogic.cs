@@ -13,9 +13,9 @@ public interface IUsersBusinessLogic
     //it is returning pageList<userDto>
     //Task<IEnumerable<UserDto>> GetUsersAsync();
     Task<PageList<UserDto>> GetUsersAsync(UserParams userParams);
-    Task<UserDto> GetUserByGuidAsync(Guid id);
-    Task<UserDto> GetUserAsync(int id);
-    Task<UserDto> GetUserAsync(string name);
+    Task<UserDto> GetUserByGuidAsync(Guid id, UserClaimGetDto claims);
+    Task<UserDto> GetUserAsync(int id, UserClaimGetDto claims);
+    Task<UserDto> GetUserAsync(string name, UserClaimGetDto claims);
 
     /// <summary>
     /// used by the LogUserAcitivty Action Filter

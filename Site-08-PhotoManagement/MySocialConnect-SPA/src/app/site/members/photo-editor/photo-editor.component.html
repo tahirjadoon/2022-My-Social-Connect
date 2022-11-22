@@ -1,13 +1,17 @@
 <div class="row">
     <!--display current user images-->
     <div class="col-2" *ngFor="let photo of member.photos">
-        <img src="{{ photo.url }}" alt="{{member.displayName}} photo URL {{ photo.url }}" class="img-thumbnail p-1">
+        <img src="{{ photo.url }}" alt="{{member.displayName}} photo URL {{ photo.url }}" class="img-thumbnail p-1"
+          [class.not-approved]="!photo.isApproved"]>
+        <div class="text-center img-text" *ngIf="!photo.isApproved">
+          <span class="text-danger">Awaiting approval</span>
+        </div>
         <div class="text-center mt-1">
             <ng-container *ngIf="photo.isMain">
-                <button class="btn btn-sm btn-success active" [disabled]="photo.isMain" title="Main Image"><i class="fa fa-star"></i></button>
+                <button class="btn btn-sm btn-success active" [disabled]="photo.isMain || !photo.isApproved" title="Main Image"><i class="fa fa-star"></i></button>
             </ng-container>
             <ng-container *ngIf="!photo.isMain">
-                <button class="btn btn-sm btn-outline-success" title="Make Main" (click)="onSetMainPhoto(photo)"><i class="fa fa-check"></i></button> 
+                <button class="btn btn-sm btn-outline-success" title="Make Main" (click)="onSetMainPhoto(photo)"><i class="fa fa-check"></i></button>
             </ng-container>
             &nbsp;
             <button class="btn btn-sm btn-danger" title="Delete" [disabled]="photo.isMain" (click)="onDeletePhoto(photo)"><i class="fa fa-trash"></i></button>
@@ -19,7 +23,7 @@
 
 <!--copied the html from https://valor-software.com/ng2-file-upload/ and then fixed it per our need-->
 <div class="row">
- 
+
     <div class="col-md-3">
 
         <h3>Add Photos</h3>

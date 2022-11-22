@@ -1,3 +1,3 @@
 export class PhotoDto {
-    constructor(public id: number, public url: string, public isMain: boolean){}
+    constructor(public id: number, public url: string, public isMain: boolean, public isApproved: boolean){}
 }

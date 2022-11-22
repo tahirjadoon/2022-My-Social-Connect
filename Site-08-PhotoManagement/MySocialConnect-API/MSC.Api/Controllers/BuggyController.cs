@@ -18,7 +18,7 @@ public class BuggyController : BaseApiController
     public async Task<ActionResult<string>> GetSecret()
     {
         //dummy call
-        var thing = await _userBl.GetUserAsync(-1);
+        var thing = await _userBl.GetUserAsync(-1, null);
         return Ok("secret text");
     }
 
@@ -26,8 +26,8 @@ public class BuggyController : BaseApiController
     public async Task<ActionResult<UserDto>> GetNotFound()
     {
         //-1 should never be found
-        var thing = await _userBl.GetUserAsync(-1);
-        if(thing == null)
+        var thing = await _userBl.GetUserAsync(-1, null);
+        if (thing == null)
             return NotFound("Dummy user -1 not found");
         return Ok(thing);
     }
@@ -36,10 +36,10 @@ public class BuggyController : BaseApiController
     public async Task<ActionResult<string>> GetServerError()
     {
         //-1 should never be found
-        var thing = await _userBl.GetUserAsync(-1);
+        var thing = await _userBl.GetUserAsync(-1, null);
 
         //should generate null reference exception
-        var thingToReturn = thing.ToString(); 
+        var thingToReturn = thing.ToString();
 
         return Ok(thingToReturn);
     }
@@ -48,7 +48,7 @@ public class BuggyController : BaseApiController
     public async Task<ActionResult<string>> GetBadRequest()
     {
         //dummy call
-        var thing = await _userBl.GetUserAsync(-1);
+        var thing = await _userBl.GetUserAsync(-1, null);
         return BadRequest("This was not a good request!");
     }
 

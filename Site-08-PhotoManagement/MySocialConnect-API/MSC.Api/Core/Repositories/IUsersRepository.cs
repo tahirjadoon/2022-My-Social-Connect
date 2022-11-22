@@ -13,11 +13,12 @@ public interface IUsersRepository
     //Rather than returning list of userDto, will return pageList<userDto>
     //Task<IEnumerable<UserDto>> GetUsersAsync();
     Task<PageList<UserDto>> GetUsersAsync(UserParams userParams);
-    Task<UserDto> GetUserByGuidAsync(Guid id);
-    Task<UserDto> GetUserAsync(int id);
-    Task<UserDto> GetUserAsync(string userName);
+    Task<UserDto> GetUserByGuidAsync(Guid id, bool isCurrentUser);
+    Task<UserDto> GetUserAsync(int id, bool isCurrentUser);
+    Task<UserDto> GetUserAsync(string userName, bool isCurrentUser);
     Task<AppUser> GetAppUserAsync(string userName, bool includePhotos = false);
     Task<AppUser> GetAppUserAsync(int id, bool includePhotos = false);
     void Register(AppUser appUser);
     Task<bool> UserExistsAsync(string userName);
+    Task<AppUser> GetUserByPhotoId(int photoId);
 }

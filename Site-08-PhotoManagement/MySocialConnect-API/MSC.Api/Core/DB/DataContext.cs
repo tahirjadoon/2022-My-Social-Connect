@@ -28,6 +28,8 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
     //UserMessage will have a table name of Messages
     public DbSet<Message> Messages { get; set; }
 
+    public DbSet<Photo> Photos { get; set; }
+
     public DbSet<SignalRGroup> SignalRGroups { get; set; }
 
     public DbSet<SignalRConnection> SignalRConnections { get; set; }
@@ -47,6 +49,9 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
 
         CreateUserLike(builder);
         CreateMessage(builder);
+
+        //add a Query filter to only return approved photos
+        builder.Entity<Photo>().HasQueryFilter(p => p.IsApproved);
 
         //keep this at the bottom. UTC date fix per EF github 
         builder.ApplyUtcDateTimeConverter();

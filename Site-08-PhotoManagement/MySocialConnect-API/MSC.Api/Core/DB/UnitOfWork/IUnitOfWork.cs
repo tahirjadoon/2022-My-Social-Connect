@@ -8,6 +8,7 @@ public interface IUnitOfWork
     ILikesRepository LikesRepo { get; }
     IMessageRepository MessageRepo { get; }
     ISignalRRepository SignalRRepo { get; }
+    IPhotoRepository PhotoRepo { get; }
 
     Task<bool> Complete();
     bool HasChanges();

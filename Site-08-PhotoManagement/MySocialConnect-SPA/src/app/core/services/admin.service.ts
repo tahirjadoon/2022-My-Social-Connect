@@ -2,6 +2,7 @@ import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { environment } from 'src/environments/environment';
+import { PhotoForApprovalDto } from '../models/photoForApprovalDto';
 
 import { userDto } from '../models/userDto.model';
 
@@ -30,6 +31,24 @@ export class AdminService {
     if (roles && roles.length > 0) url += "?roles=" + roles;
     if (environment.displayConsoleLog) console.log(url);
     return this.httpClientService.post<string[]>(url, {});
+  }
+
+  getPhotosForApproval() {
+    var url = this.apiUrlService.adminPhotosToModerate;
+    if (environment.displayConsoleLog) console.log(url);
+    return this.httpClientService.get<PhotoForApprovalDto[]>(url);
+  }
+
+  approvePhoto(photoId: number) {
+    var url = this.apiUrlService.adminApprovePhoto.replace(this.apiUrlService.adminPhotoIdReplace, photoId.toString());
+    if (environment.displayConsoleLog) console.log(url);
+    return this.httpClientService.post<any>(url, {});
+  }
+
+  rejectPhoto(photoId: number) {
+    var url = this.apiUrlService.adminRejectPhoto.replace(this.apiUrlService.adminPhotoIdReplace, photoId.toString());
+    if (environment.displayConsoleLog) console.log(url);
+    return this.httpClientService.post<any>(url, {});
   }
 
 }
