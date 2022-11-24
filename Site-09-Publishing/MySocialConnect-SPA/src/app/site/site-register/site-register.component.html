@@ -1,0 +1,95 @@
+<!--***************** OLD TEMPLATE DRIVEN FORM *****************-->
+<ng-container *ngIf="!isReactiveForm">
+    <!--template driven form-->
+    <form #registerForm="ngForm" (ngSubmit)="onRegisterTemplateDriven()" autocomplete="off">
+        <h2 class="text-center text-primary">Sign up</h2>
+        <hr>
+        <div class="form-group mt-2">
+            <input [(ngModel)]="siteRegister.userName" #username="ngModel" required minlength="5" placeholder="username" id="username" name="username" type="text" class="form-control">
+        </div>
+        <div class="form-group mt-2">
+            <input [(ngModel)]="siteRegister.password" #password="ngModel" required placeholder="password" id="password" name="password" type="password" class="form-control">
+        </div>
+        <div class="form-group text-center mt-2">
+            <button class="btn btn-success mr-2" type="submit" [disabled]="username.invalid || password.invalid">Register</button>&nbsp;
+            <button class="btn btn-danger" (click)="onCancel()" type="button">Cancel</button>
+        </div>
+    
+        <div class="row mt-5" *ngIf="validationErrors && validationErrors.length > 0">
+            <ul class="text-danger">
+                <li *ngFor="let error of validationErrors">{{ error }}</li>
+            </ul>
+        </div>
+    </form>
+</ng-container>
+
+<!--***************** NEW REACTIVE FORM *****************-->
+<ng-container *ngIf="isReactiveForm && registerForm">
+    <!--Reactive Form-->
+    <form [formGroup]="registerForm" (ngSubmit)="registerForm.valid && onRegisterReactiveForm()" autocomplete="off">
+        <h2 class="text-center text-primary">Sign up</h2>
+        <hr>
+        <!-- 
+            we can eihter use registerForm.get("userName") 
+            or can use convenience getter rf which stands for registerForm
+            in this case not using rf['userName'].pristine, which means the value has not yet changed in the UI
+        -->
+        <fieldset class="reset">
+            <legend class="reset">Who you are?</legend>
+                <div class="form-group">
+                    <label class="control-label" style="margin-right: 10px;">I am a: </label>
+                    <label class="radio-inline" *ngFor="let gender of genderList; let i = index;">
+                        <!--apply the marging to the left side of the second radio button :) -->
+                        <input type="radio" id="gender-{{gender.id}}" value="{{gender.value}}" formControlName="gender" [class.ms-3]="i == 1"> {{gender.label}}
+                    </label>
+                </div>
+                <div class="form-group mt-2"><app-text-input [formControl]="rf2('displayName')" [label]="'Display name'" [placeHolder]="'display name'"></app-text-input></div>
+                <div class="form-group mt-2"><app-date-input [formControl]="rf2('dateOfBirth')" [label]="'Date Of Birth'" [placeHolder]="'date of birth MM/DD/YYYY'" [maxDate]="maxDate"></app-date-input></div>
+                <div class="form-group mt-2"><app-text-input [formControl]="rf2('city')" [label]="'city'" [placeHolder]="'city'"></app-text-input></div>
+                <div class="form-group mt-2"><app-text-input [formControl]="rf2('country')" [label]="'country'" [placeHolder]="'country'"></app-text-input></div>
+        </fieldset>
+
+        <fieldset class="mt-2 reset">
+            <legend class="reset">Login info?</legend>
+                <div class="form-group"><app-text-input [formControl]="rf2('userName')" [label]="'User name'" [placeHolder]="'user name'"></app-text-input></div>
+                <div class="form-group mt-2"><app-text-input [formControl]="rf2('password')" [type]="'password'" [label]="'Password'" [placeHolder]="'password'"></app-text-input></div>
+                <div class="form-group mt-2"><app-text-input [formControl]="rf2('confirmPassword')" [type]="'password'" [label]="'Confirm password'" [placeHolder]="'confirm password'" [labelMustMatch]="'Password and confirm password'"></app-text-input></div>
+        </fieldset>
+
+        <div class="form-group text-center mt-2">
+            <button class="btn btn-success me-2" type="submit" [disabled]="registerForm.invalid">Register</button>
+            <button class="btn btn-danger" (click)="onCancel()" type="button">Cancel</button>
+        </div>
+        
+        <!--########## Validators being assigned in real time ##########-->
+        <div class="card mt-2">
+            <div class="card-header">Validator(s) being assinged to the controls by angular</div>
+            <div class="card-body">
+                <!--<app-display-formgroup-errors [key]="'UserName'" [errors]="rf['userName'].errors"></app-display-formgroup-errors>-->
+                <div *ngFor="let item of registerForm.controls | validatorsTransform">
+                    <app-display-formgroup-errors [key]="item" [errors]="rf[item].errors"></app-display-formgroup-errors>
+                </div>
+            </div>
+        </div>
+    
+        <div class="row mt-5" *ngIf="validationErrors && validationErrors.length > 0">
+            <ul class="text-danger">
+                <li *ngFor="let error of validationErrors">{{ error }}</li>
+            </ul>
+        </div>
+    </form>
+
+    <div class="card mt-2">
+        <div class="card-header">Instructions</div>
+        <div class="card-body">
+            <ul>
+                <li>Username must be only characters</li>
+                <li>Username must be minimum 5 characters</li>
+                <li>Password must be between 4 and 8 characters</li>
+                <li>Password must have an upper case, lower case and a number in it</li>
+            </ul>
+        </div>
+    </div>
+
+</ng-container>
+
