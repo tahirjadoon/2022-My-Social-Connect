@@ -16,6 +16,7 @@ public class DataContext : IdentityDbContext<AppUser, AppRole, int,
 {
     public DataContext(DbContextOptions options) : base(options)
     {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
 
 

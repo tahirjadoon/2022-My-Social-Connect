@@ -45,6 +45,9 @@ public class Seed
         foreach (var user in users)
         {
             user.UserName = user.UserName.ToLowerInvariant();
+            user.CreatedOn = DateTime.SpecifyKind(user.CreatedOn, DateTimeKind.Utc);
+            user.UpdatedOn = DateTime.SpecifyKind(user.UpdatedOn, DateTimeKind.Utc);
+            user.LastActive = DateTime.SpecifyKind(user.LastActive, DateTimeKind.Utc);
             //make the photo IsApproved
             user.Photos.First().IsApproved = true;
             //saves the users to the database as well. no need to do SaveChangesAsync

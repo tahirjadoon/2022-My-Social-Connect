@@ -45,12 +45,13 @@ try
 {
     //get the required service
     var context = services.GetRequiredService<DataContext>();
-    //asynchronously applies an pending migrations for the context to the database. Will create the database if it doesn't exist already
-    //just restarting the application will apply our migrations
-    await context.Database.MigrateAsync();
     //due to identity get the userManager and Role Manager then use it to seed users and roles
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
     var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
+    //asynchronously applies an pending migrations for the context to the database. Will create the database if it doesn't exist already
+    //just restarting the application will apply our migrations
+    await context.Database.MigrateAsync();
+    //await context.Database.ExecuteSqlRawAsync("DELETE FROM \"Connections\"");
     //now seed the users
     await Seed.SeedUsers(userManager, roleManager);
 }
@@ -84,9 +85,17 @@ app.UseAuthentication();
 //tell routing about a hub end point and provide a route for accessing PresenceHub
 app.MapHub<PresenceHub>("hubs/presence");
 app.MapHub<MessageHub>("hubs/message");
+//map to fallback controller after angular build and wwwroot folder getting created inside the MVC.Api folder
+app.MapFallbackToController("Index", "Fallback");
 //CUSTOM: End
 
 app.UseAuthorization();
+
+//CUSTOM: start
+//serve static files as well. In this case we are building the angular prod app inside the MySocialConnect-API\MSC.Api folder
+app.UseDefaultFiles(); //will fish out the index.html file from wwwwroot folder 
+app.UseStaticFiles(); //will be looking for the wwwroot folder
+//CUSTOM: END
 
 app.MapControllers();
 

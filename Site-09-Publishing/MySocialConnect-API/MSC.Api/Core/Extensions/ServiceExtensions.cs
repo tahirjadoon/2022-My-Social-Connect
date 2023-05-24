@@ -93,7 +93,8 @@ public static class ServiceExtensions
     {
         services.AddDbContext<DataContext>(options =>
         {
-            options.UseSqlite(config.GetDefaultConnectionString());
+            //options.UseSqlite(config.GetDefaultConnectionString());
+            options.UseNpgsql(config.GetDefaultConnectionString());
         });
     }
 }

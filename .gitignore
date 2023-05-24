@@ -281,6 +281,9 @@ UpgradeLog*.htm
 ServiceFabricBackup/
 *.rptproj.bak
 
+# postgresql fly.io information 
+postgresql flyio information.txt
+
 # SQL Server files
 *.mdf
 *.ldf
