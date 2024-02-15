@@ -1,0 +1,48 @@
+# fly.toml file generated for yyz-mysocialconnect on 2022-12-14T22:09:10-05:00
+
+app = "yyz-mysocialconnect"
+kill_signal = "SIGINT"
+kill_timeout = 5
+processes = []
+
+[build]
+  image = "tahirjadoon/mysocialconnect:latest"
+
+[env]
+  # important to expose port 8080 in docker file and also no need to put https here. 
+  # important for health checks 
+  ASPNETCORE_URLS="http://+:8080"
+  # cloudinay config from the appsettings.json. cloudName and ApiKey are not secret so can put here. 
+  # apiSecrect will not be put here. Keep note that there are two under scores
+  CloudinarySettings__CloudName="dj7i1ncqg"
+  CloudinarySettings__ApiKey="588574281751962"
+
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
+
+[[services]]
+  http_checks = []
+  internal_port = 8080
+  processes = ["app"]
+  protocol = "tcp"
+  script_checks = []
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+    type = "connections"
+
+  [[services.ports]]
+    force_https = true
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+  [[services.tcp_checks]]
+    grace_period = "1s"
+    interval = "15s"
+    restart_limit = 0
+    timeout = "2s"
