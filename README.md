@@ -1,5 +1,5 @@
 # 2022-My-Social-Connect
-Social networking app
+Social networking app utilizing .Net 6, Angular 13.0.2, Entity Framework, NoSQL
 
 Projects
 ------------------------------------------------------
